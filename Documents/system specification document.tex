@@ -1,0 +1,283 @@
+\documentclass[a4paper]{article}
+
+% -------------------------------------------------
+% Packages
+% -------------------------------------------------
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{geometry}
+\usepackage{setspace}
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+
+% -------------------------------------------------
+% Page Layout
+% -------------------------------------------------
+\geometry{
+  left=25mm,
+  right=25mm,
+  top=25mm,
+  bottom=25mm
+}
+
+\setstretch{1.15}
+
+% -------------------------------------------------
+% Header / Footer
+% -------------------------------------------------
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{System Specification Document}
+\fancyhead[R]{\thepage}
+
+% -------------------------------------------------
+% Code Listings
+% -------------------------------------------------
+\lstset{
+  basicstyle=\ttfamily\small,
+  frame=single,
+  breaklines=true,
+  backgroundcolor=\color{gray!5}
+}
+
+% -------------------------------------------------
+% Metadata
+% -------------------------------------------------
+\title{\textbf{System Specification Document}}
+\author{S.O.L.A.R. Project}
+\date{\today}
+
+% -------------------------------------------------
+% Document
+% -------------------------------------------------
+\begin{document}
+
+\maketitle
+\thispagestyle{empty}
+\newpage
+
+% -------------------------------------------------
+% Revision History
+% -------------------------------------------------
+\section*{Revision History}
+\begin{longtable}{@{}lll p{7cm}@{}}
+\toprule
+Version & Date & Author & Description \\ \midrule
+0.1 & 2025-12-17 & Matteo & Initial draft \\
+1.0 & YYYY-MM-DD & Name & Approved release \\
+\bottomrule
+\end{longtable}
+
+\newpage
+\tableofcontents
+\newpage
+
+% =================================================
+% 1. Introduction
+% =================================================
+\section{Introduction}
+
+\subsection{Purpose}
+The purpose of the project is to optimize the maintenance and output of solar power plants. Utilizing historical 
+power generation and weather sensor data, the system 
+will provide two critical capabilities: predicting energy production for the upcoming 24 hours and identifying 
+underperforming inverters caused by dirty panels or faulty equipment. The system targets Plant Managers and 
+Maintenance Engineers to facilitate proactive maintenance and grid load planning.
+.
+
+\subsection{Scope}
+The system should give a website from what is possible to see power 
+production in real time and how much was predicted for the same day
+and the day after.
+
+
+\subsection{Definitions, Acronyms, and Abbreviations}
+\begin{description}
+  \item[API] Application Programming Interface
+\end{description}
+
+\subsection{References}
+List applicable standards, documents, or specifications.
+NO IDEA
+
+\subsection{ML formulation}
+ML expert need to fill this section.
+
+\subsection{KPIs}
+The performance to be monitored are the power predicted the same day
+with the actual power produced.
+
+
+% =================================================
+% 2. Data Specification
+% =================================================
+\section{Data Specification}
+The data is gather from a dataset found on Kaggle. For simulating
+a real system there will be two machine that will generate the unseen
+data. One will generate the data by the solar pannels and the other
+will generate the weather condition. The dataset is complete and
+doesn't contain errors. But we seen a mismatch of dimension in one
+column so it needed to be adapted to the context.
+
+% =================================================
+% 2. System Overview
+% =================================================
+\section{System Overview}
+
+\subsection{System Description}
+The system follows a data pipeline architecture comprising Data Ingestion, Machine Learning (ML) Processing, and a 
+Visualization Dashboard.
+The main modules include:
+Data Ingestion Module: Handles the loading and cleaning of generation and weather sensor data (based on the provided 
+Kaggle dataset schema).
+Forecasting Module: Utilizes regression models to predict AC/DC power output based on weather parameters (irradiation, 
+temperature).
+Anomaly Detection Module: Identifies deviations between expected and actual power output to flag specific source keys 
+(inverters) requiring maintenance.
+Dashboard Module: A web-based interface for visualizing forecasts and active alerts.
+
+
+% =================================================
+% 3. Functional Requirements
+% =================================================
+\section{Functional Requirements}
+
+\subsection{Use Cases}
+See in real time the power produced by the power plant.
+See how much power will be predicted in the same day
+and next day
+
+\subsection{Functional Requirement List}
+\begin{longtable}{@{}p{2cm} p{11cm}@{}}
+\toprule
+ID & Description \\ \midrule
+FR-01 & The system shall ingest historical data.\\
+FR-02 & The model shall forecast timestamp predictions for the next 24 hours.\\
+FR-03 & The system shall forecast total energy yield for the next 24 hours.\\
+FR-04 & The system shall detect anomalies in the power production.\\
+FR-05 & The system shall identify underperforming inverters.\\
+FR-06 & The system shall display the list of underperforming inverters and their efficiency loss.\\
+FR-07 & The systems shall display the plot for the total predicted power generation against the actual one.\\
+FR-08 & The systems shall display the plot for the predicted power generation for each timestamp against the actual one.\\
+
+\bottomrule
+\end{longtable}
+
+% =================================================
+% 4. Non-Functional Requirements
+% =================================================
+\section{Non-Functional Requirements}
+
+\begin{longtable}{@{}p{2cm} p{11cm}@{}}
+\toprule
+ID & Description \\ \midrule
+NFR-01 & The forecasting model shall achieve a Mean Absolute Error (MAE) of less than a threshold on the validation set.\\
+NFR-02 & The anomaly detection algorithm shall have a low False Positive Rate (FPR) to prevent unnecessary maintenance dispatch.\\
+\bottomrule
+\end{longtable}
+
+
+% =================================================
+% 5. System Architecture
+% =================================================
+\section{System Architecture}
+
+\subsection{Architectural Overview}
+Describe architecture style (e.g., client-server, microservices).
+
+\subsection{Component Diagram}
+\begin{figure}[h]
+  \centering
+  %\includegraphics[width=0.8\textwidth]{architecture.png}
+  \caption{System Architecture Diagram}
+\end{figure}
+
+\subsection{Component Descriptions}
+Describe each major component and responsibility.
+
+% =================================================
+% 6. Interfaces
+% =================================================
+\section{Interfaces}
+
+\subsection{External Interfaces}
+APIs, third-party services, protocols.
+
+\subsection{Internal Interfaces}
+Inter-module communication.
+
+\subsection{API Specification Example}
+\begin{lstlisting}
+POST /device/register
+{
+  "otp": "string",
+  "deviceFingerprint": "string"
+}
+\end{lstlisting}
+
+% =================================================
+% 7. Data Design
+% =================================================
+\section{Data Design}
+
+\subsection{Data Model}
+High-level entity relationships.
+
+\subsection{Database Schema}
+\begin{longtable}{@{}lll p{6cm}@{}}
+
+\toprule
+Field & Type & Required & Description \\ \midrule
+%device_id & UUID & Yes & Unique device identifier \\
+%otp_hash & String & Yes & Hashed OTP value \\
+\bottomrule
+\end{longtable}
+
+% =================================================
+% 8. Error Handling and Logging
+% =================================================
+\section{Error Handling and Logging}
+
+\subsection{Error Codes}
+Describe error responses and codes.
+
+\subsection{Logging Strategy}
+Log levels, retention, and audit requirements.
+
+% =================================================
+% 9. Security Considerations
+% =================================================
+\section{Security Considerations}
+
+Threat model, attack vectors, mitigations, and compliance.
+
+% =================================================
+% 10. Deployment and Environment
+% =================================================
+\section{Deployment and Environment}
+
+\subsection{Deployment Architecture}
+Environments (dev, staging, production).
+
+\subsection{Configuration}
+Environment variables, secrets management.
+
+% =================================================
+% 11. Appendices
+% =================================================
+\section{Appendix}
+
+\subsection{Glossary}
+Optional glossary.
+
+\subsection{Future Enhancements}
+Planned or potential improvements.
+
+\end{document}
