@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2025/dev/Debian) (preloaded format=pdflatex 2025.12.17)  17 DEC 2025 17:55
+This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2025/dev/Debian) (preloaded format=pdflatex 2025.12.17)  5 JAN 2026 15:44
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -421,14 +421,21 @@ LaTeX Font Info:    External font `lmex10' loaded for size
 
 [1
 
-{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}{/usr/share/texmf/fonts/enc/dvips/lm/lm-ec.enc}] (operational governance & versioning document/operational governance & versioning document.toc)
+{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}{/usr/share/texmf/fonts/enc/dvips/lm/lm-ec.enc}] (operational governance & versioning document/operational governance & versioning document.toc
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <10> on input line 4.
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <7> on input line 4.
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <5> on input line 4.
+)
 \tf@toc=\write4
 \openout4 = `"operational governance & versioning document.toc"'.
 
 
 
 [2]
-LaTeX Font Info:    Trying to load font information for TS1+lmr on input line 61.
+LaTeX Font Info:    Trying to load font information for TS1+lmr on input line 62.
  (/usr/share/texmf/tex/latex/lm/ts1lmr.fd
 File: ts1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
@@ -439,21 +446,21 @@ LaTeX2e <2024-11-01> patch level 2
 L3 programming layer <2025-01-18>
  ***********
 Package rerunfilecheck Info: File `"operational governance & versioning document".out' has not changed.
-(rerunfilecheck)             Checksum: 078517FD870AD1A2166F407DFBEC5F26;768.
+(rerunfilecheck)             Checksum: 76494C3F8E7DB75C9B580DA6A4F42C38;955.
  ) 
 Here is how much of TeX's memory you used:
- 12044 strings out of 475135
- 187918 string characters out of 5765397
- 588645 words of memory out of 5000000
- 34884 multiletter control sequences out of 15000+600000
- 591984 words of font info for 55 fonts, out of 8000000 for 9000
+ 12067 strings out of 475135
+ 188219 string characters out of 5765397
+ 588651 words of memory out of 5000000
+ 34898 multiletter control sequences out of 15000+600000
+ 605768 words of font info for 65 fonts, out of 8000000 for 9000
  36 hyphenation exceptions out of 8191
- 75i,11n,79p,335b,440s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 75i,11n,79p,335b,441s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/share/texmf/fonts/type1/public/lm/lmbx10.pfb></usr/share/texmf/fonts/type1/public/lm/lmbx12.pfb></usr/share/texmf/fonts/type1/public/lm/lmr10.pfb></usr/share/texmf/fonts/type1/public/lm/lmr12.pfb>
-Output written on "operational governance & versioning document/operational governance & versioning document.pdf" (3 pages, 114433 bytes).
+Output written on "operational governance & versioning document/operational governance & versioning document.pdf" (3 pages, 115092 bytes).
 PDF statistics:
- 75 PDF objects out of 1000 (max. 8388607)
- 60 compressed objects within 1 object stream
- 10 named destinations out of 1000 (max. 500000)
- 41 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 80 PDF objects out of 1000 (max. 8388607)
+ 65 compressed objects within 1 object stream
+ 11 named destinations out of 1000 (max. 500000)
+ 49 words of extra memory for PDF output out of 10000 (max. 10000000)
 
