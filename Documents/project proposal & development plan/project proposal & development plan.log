@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2025/dev/Debian) (preloaded format=pdflatex 2025.12.17)  17 DEC 2025 17:54
+This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2025/dev/Debian) (preloaded format=pdflatex 2025.12.17)  5 JAN 2026 15:33
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -421,7 +421,14 @@ LaTeX Font Info:    External font `lmex10' loaded for size
 
 [1
 
-{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}{/usr/share/texmf/fonts/enc/dvips/lm/lm-ec.enc}] (project proposal & development plan/project proposal & development plan.toc)
+{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}{/usr/share/texmf/fonts/enc/dvips/lm/lm-ec.enc}] (project proposal & development plan/project proposal & development plan.toc
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <10> on input line 1.
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <7> on input line 1.
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <5> on input line 1.
+)
 \tf@toc=\write4
 \openout4 = `"project proposal & development plan.toc"'.
 
@@ -433,27 +440,29 @@ LaTeX Font Info:    Trying to load font information for TS1+lmr on input line 61
 File: ts1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
 
-[3{/usr/share/texmf/fonts/enc/dvips/lm/lm-ts1.enc}] (project proposal & development plan/project proposal & development plan.aux)
+[3{/usr/share/texmf/fonts/enc/dvips/lm/lm-ts1.enc}]
+
+[4] (project proposal & development plan/project proposal & development plan.aux)
  ***********
 LaTeX2e <2024-11-01> patch level 2
 L3 programming layer <2025-01-18>
  ***********
 Package rerunfilecheck Info: File `"project proposal & development plan".out' has not changed.
-(rerunfilecheck)             Checksum: A6A71E7C17AFB6A2288DE30956FFF71F;1178.
+(rerunfilecheck)             Checksum: 29CF54E061FCB7C2316913EAA846FBD8;1939.
  ) 
 Here is how much of TeX's memory you used:
- 12050 strings out of 475135
- 187618 string characters out of 5765397
- 589601 words of memory out of 5000000
- 34887 multiletter control sequences out of 15000+600000
- 591984 words of font info for 55 fonts, out of 8000000 for 9000
+ 12092 strings out of 475135
+ 188297 string characters out of 5765397
+ 593610 words of memory out of 5000000
+ 34910 multiletter control sequences out of 15000+600000
+ 605768 words of font info for 65 fonts, out of 8000000 for 9000
  36 hyphenation exceptions out of 8191
- 75i,11n,79p,463b,441s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 75i,11n,79p,326b,551s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/share/texmf/fonts/type1/public/lm/lmbx10.pfb></usr/share/texmf/fonts/type1/public/lm/lmbx12.pfb></usr/share/texmf/fonts/type1/public/lm/lmr10.pfb></usr/share/texmf/fonts/type1/public/lm/lmr12.pfb>
-Output written on "project proposal & development plan/project proposal & development plan.pdf" (3 pages, 118392 bytes).
+Output written on "project proposal & development plan/project proposal & development plan.pdf" (4 pages, 120733 bytes).
 PDF statistics:
- 91 PDF objects out of 1000 (max. 8388607)
- 76 compressed objects within 1 object stream
- 13 named destinations out of 1000 (max. 500000)
- 65 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 131 PDF objects out of 1000 (max. 8388607)
+ 114 compressed objects within 2 object streams
+ 24 named destinations out of 1000 (max. 500000)
+ 113 words of extra memory for PDF output out of 10000 (max. 10000000)
 
