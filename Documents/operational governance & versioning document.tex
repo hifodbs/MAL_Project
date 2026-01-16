@@ -48,45 +48,44 @@
 \newpage
 
 % =================================================
-% 1. Purpose
-% =================================================
-\section{Purpose}
-Evaluate the student’s understanding of operational governance, version control, model lifecycle management, and monitoring practices.
-
-% =================================================
 % 2. Version Control Strategy
 % =================================================
 \section{Version Control Strategy}
-\begin{itemize}
-    \item Branching strategy
-    \item Tagging conventions
-    \item Versioning of code, data, and models
-\end{itemize}
+A GitFlow branching model is adopted.
+Code, datasets, and models are versioned using semantic versioning.
 
 % =================================================
 % 3. CI/CD \& Automation
 % =================================================
 \section{CI/CD \& Automation}
-Describe pipelines, testing, deployment, and automation practices.
+\begin{itemize}
+    \item Run tests
+    \item Validate data
+    \item Train and evaluate models
+    \item Deploy models if KPIs are satisfied
+\end{itemize}
 
 % =================================================
 % 4. Model Lifecycle Governance
 % =================================================
 \section{Model Lifecycle Governance}
+Models are registered in a centralized registry with metadata including:
 \begin{itemize}
-    \item Model registry
-    \item Reproducibility
-    \item Experiment tracking
+    \item Hyperparameters
+    \item Training dataset version
+    \item Evaluation metrics
 \end{itemize}
 
 % =================================================
 % 5. Monitoring \& Maintenance Plan
 % =================================================
-\section{Monitoring \& Maintenance Plan}
-\begin{itemize}
-    \item Drift detection
-    \item Incident response
-    \item Logging and alerting
-\end{itemize}
+\subsection{Monitoring and Maintenance}
+
+\subsubsection{Monitoring}
+Feature drift and prediction performance are continuously monitored.
+
+\subsubsection{Incident Response}
+If degradation is detected, the system triggers retraining or rolls back to a previous stable model.
+
 
 \end{document}
