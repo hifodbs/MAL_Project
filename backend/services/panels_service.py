@@ -1,101 +1,22 @@
-sample_panels = [
-    {
-        "id": "panel_1",
-        "id_plant": "plant_1",
-        "status": "Performing"
-    },
-    {
-        "id": "panel_2",
-        "id_plant": "plant_1",
-        "status": "Performing"
-    },
-    {
-        "id": "panel_3",
-        "id_plant": "plant_1",
-        "status": "Underperforming"
-    },
-    {
-        "id": "panel_4",
-        "id_plant": "plant_1",
-        "status": "Broken"
-    },
-    {
-        "id": "panel_5",
-        "id_plant": "plant_1",
-        "status": "Performing"
-    },
-    {
-        "id": "panel_2",
-        "id_plant": "plant_2",
-        "status": "Underperforming"
-    },
-    {
-        "id": "panel_2",
-        "id_plant": "plant_2",
-        "status": "Underperforming"
-    },
-    {
-        "id": "panel_3",
-        "id_plant": "plant_2",
-        "status": "Broken"
-    },
-    {
-        "id": "panel_4",
-        "id_plant": "plant_2",
-        "status": "Underperforming"
-    },
-    {
-        "id": "panel_5",
-        "id_plant": "plant_2",
-        "status": "Performing"
-    }
-]
 
-sample_measurements = {
-    "panel_1": [
-        {"timestamp": "2025-12-21T10:00:00Z", "power": 534},
-        {"timestamp": "2025-12-21T11:00:00Z", "power": 512},
-        {"timestamp": "2025-12-21T12:00:00Z", "power": 564}
-    ],
-    "panel_2": [
-        {"timestamp": "2025-12-21T10:00:00Z", "power": 321},
-        {"timestamp": "2025-12-21T11:00:00Z", "power": 342},
-        {"timestamp": "2025-12-21T12:00:00Z", "power": 291}
-    ]
-}
+from backend.dao.panel_dao import PanelsDAO
+from backend.dao.measurements_dao import MeasurementsDAO
+from datetime import datetime, timedelta
 
 
-sample_predictions = {
-    "panel_1": [
-        {"timestamp": "2025-12-21T10:00:00Z", "power": 500},
-        {"timestamp": "2025-12-21T11:00:00Z", "power": 520},
-        {"timestamp": "2025-12-21T12:00:00Z", "power": 510},
-        {"timestamp": "2025-12-21T13:00:00Z", "power": 530},
-        {"timestamp": "2025-12-21T14:00:00Z", "power": 540},
-        {"timestamp": "2025-12-21T15:00:00Z", "power": 525}
-    ],
-    "panel_2": [
-        {"timestamp": "2025-12-21T10:00:00Z", "power": 300},
-        {"timestamp": "2025-12-21T11:00:00Z", "power": 320},
-        {"timestamp": "2025-12-21T12:00:00Z", "power": 310},
-        {"timestamp": "2025-12-21T13:00:00Z", "power": 290},
-        {"timestamp": "2025-12-21T14:00:00Z", "power": 270},
-        {"timestamp": "2025-12-21T15:00:00Z", "power": 265}
-    ]
-}
+class PanelsService:
+    def __init__(self, data_directory="cleaned_data"):
+        self.panel_dao = PanelsDAO(data_directory=data_directory)
+        self.measurements_dao = MeasurementsDAO(data_directory=data_directory)
 
-def get_panels(plant_id):
-    """
-    Fetch the list of panels for a given plant_id.
-    Returns None if panels for the given plant_id do not exist.
-    """
-    return sample_panels.get(plant_id)
 
-def get_panel_measurements(panel_id):
-    """
-    """
-    return sample_predictions.get(panel_id)
+    def get_all_panel_measurements_by_id(self, plant_id: str, panel_id: str):
+        return self.measurements_dao.get_all_panel_measurements_by_panel_id(plant_id=plant_id, panel_id=panel_id)
 
-def get_panel_predictions(panel_id):
 
-    return sample_measurements.get(panel_id)
+    def get_all_panel_measurement_by_id_and_time_reange(self, plant_id: str, panel_id: str, start_time: datetime, hours: int):
+        return self.measurements_dao.get_panel_measurements_by_panel_id_and_time_range(plant_id=plant_id, panel_id=panel_id, start_time=start_time, hours=hours)
+
+
+    def get_all_by_plant_id(self, plant_id: str):
+        return self.panel_dao.get_all_by_plant_id(plant_id=plant_id)
