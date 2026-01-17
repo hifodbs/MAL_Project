@@ -30,8 +30,7 @@ selected_plant_id = plant_name_to_id[selected_plant_name]
 
 
 
-st.subheader("Selected plant")
-st.write(f"Name: {selected_plant_name}")
+st.subheader(f"Selected plant: {selected_plant_name}")
 
 
 measurement = get_measurements_by_plant_id(selected_plant_id)
@@ -60,7 +59,7 @@ if not df_measurements.empty or not df_predictions.empty:
         combined.pivot(
             index="timestamp",
             columns="type",
-            values="power"
+            values="ac_power"
         )
     )
 else:
