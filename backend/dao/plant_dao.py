@@ -1,5 +1,3 @@
-import csv
-from datetime import datetime
 from typing import List
 from backend.models.plant import Plant
 from pathlib import Path
@@ -12,14 +10,24 @@ class PlantsDAO:
         self.data_directory = Path(data_directory)
 
 
+
+    def _name_refactor(self, string: str):
+        name = ""
+        parts = string.split("_")
+        for word in parts:
+            name += word[0].upper() + word[1:] + " "
+        return name
+
+
+
     def get_all(self) -> List[Plant]:
         plants: List[Plant] = []
 
         for csv_file in self.data_directory.glob("*.csv"):
-            plant_name = csv_file.stem
+            plant_name = self._name_refactor(csv_file.stem)
             plant = Plant(
                 name=plant_name,
-                id=str(csv_file)
+                id=str(csv_file.stem)
             )
             plants.append(plant)
 
