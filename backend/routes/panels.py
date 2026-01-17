@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify, request
-from backend.services.panels_service import get_panels, get_panel_measurements, get_panel_predictions
-
+from backend.services.panels_service import PanelsService
+import random 
 
 panels_bp = Blueprint( 
     "panels", 
@@ -8,13 +8,14 @@ panels_bp = Blueprint(
     url_prefix="/plants/<plant_id>/panels"
 )
 
-
+data_directory = "cleaned_data"
+panels_service = PanelsService(data_directory)
 
 # GET /plants/<plant_id>/panels
 
 @panels_bp.route("", methods=["GET"])
 def get_plant_panels(plant_id):
-    panels = get_panels(plant_id=plant_id)
+    panels = panels_service.get_all_by_plant_id(plant_id=plant_id)
     return jsonify(panels), 200
 
 
@@ -25,11 +26,19 @@ def get_plant_panels(plant_id):
     methods=["GET"],
 )
 def get_measurements(plant_id, panel_id):
-    measurements = get_panel_measurements(
+    measurements = panels_service.get_all_panel_measurements_by_id(
         plant_id=plant_id,
         panel_id=panel_id,
     )
-    return jsonify(measurements), 200
+    return jsonify([
+        {
+            "timestamp": m.timestamp.isoformat(),
+            "plant_id": m.plant_id,
+            "panel_id": m.panel_id,
+            "ac_power": m.ac_power,
+        }
+        for m in measurements
+    ]), 200
 
 
 
@@ -40,8 +49,16 @@ def get_measurements(plant_id, panel_id):
     methods=["GET"],
 )
 def get_predictions(plant_id, panel_id):
-    predictions = get_panel_predictions(
+    predictions = panels_service.get_all_panel_measurements_by_id( #this is fake
         plant_id=plant_id,
         panel_id=panel_id,
     )
-    return jsonify(predictions), 200
+    return jsonify([
+        {
+            "timestamp": p.timestamp.isoformat(),
+            "plant_id": p.plant_id,
+            "panel_id": p.panel_id,
+            "ac_power": p.ac_power * random.uniform(0.9, 1.1),
+        }
+        for p in predictions
+    ]), 200
