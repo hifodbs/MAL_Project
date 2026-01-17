@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, request
-from services.plants_service import get_measurements, get_predictions, get_plants
+from backend.services.plants_service import get_measurements, get_predictions, get_plants
 
 plants_bp = Blueprint("plants", __name__)
 

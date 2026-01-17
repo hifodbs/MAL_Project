@@ -1,5 +1,5 @@
 # services/prediction_service.py
-
+from backend.dao.plant_dao import PlantsDAO
 from datetime import datetime, timedelta
 
 sample_plants = [
@@ -59,7 +59,11 @@ def get_plants():
     """
     Fetch the list of plants.
     """
-    return sample_plants
+
+    dao = PlantsDAO(data_directory="cleaned_data")
+    plants = dao.get_all()
+
+    return plants
 
 def get_predictions(plant_id):
     """

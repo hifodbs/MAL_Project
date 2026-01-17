@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, request
-from services.panels_service import get_panels, get_panel_measurements, get_panel_predictions
+from backend.services.panels_service import get_panels, get_panel_measurements, get_panel_predictions
 
 
 panels_bp = Blueprint( 

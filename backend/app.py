@@ -1,6 +1,6 @@
 from flask import Flask
-from routes.test_endpoint import predictions_bp
-from routes.plants import plants_bp
+from backend.routes.test_endpoint import predictions_bp
+from backend.routes.plants import plants_bp
 
 app = Flask(__name__)
 
