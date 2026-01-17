@@ -10,7 +10,7 @@ class PanelMeasurement:
 
 
 @dataclass
-class GlobalMeasurment:
+class GlobalMeasurement:
     timestamp: datetime
     plant_id: str
     ac_power: float
