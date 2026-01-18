@@ -53,6 +53,8 @@ def process_one_reading(model, metric, adwin, features: dict, target: float) -> 
     """
     Contains the training loop for one reading: predict, detect drift, update metric, learn
     """
+
+    """
     y_pred = model.predict_one(features)
     if y_pred is None:
         y_pred = 0.0
@@ -64,6 +66,26 @@ def process_one_reading(model, metric, adwin, features: dict, target: float) -> 
     metric.update(target, y_pred)
 
     model.learn_one(features, target)
+    """
+
+    y_pred = model.predict_one(features)
+    if y_pred is None: y_pred = 0.0
+    if y_pred < 0: y_pred = 0.0
+
+    error = abs(target - y_pred)
+    adwin.update(error)
+    drift_detected = adwin.drift_detected
+    if drift_detected:
+        weight = 5.0
+    elif error > 500: 
+        weight = 0.0 
+    else:
+        weight = 1.0
+
+    metric.update(target, y_pred)
+
+    if weight > 0:
+        model.learn_one(features, target, sample_weight=weight)
 
     return y_pred, drift_detected
 
