@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-from api import get_plants, get_predictions_by_plant_id, get_measurements_by_plant_id
+from api import get_plants, get_predictions_by_plant_id, get_measurements_by_plant_id, get_panels_by_plant_id, get_meaurements_by_panel_id, get_predictions_by_panel_id
 
 
 
@@ -64,3 +64,62 @@ if not df_measurements.empty or not df_predictions.empty:
     )
 else:
     st.info("No data to display")
+
+
+
+
+
+# --------------------------------------------------
+# Panels 
+# --------------------------------------------------
+
+if "selected_panel_id" not in st.session_state:
+    st.session_state.selected_panel_id = None
+    
+
+panels = get_panels_by_plant_id(selected_plant_id)
+
+if panels:
+    st.markdown("### Panels")
+
+    cols = st.columns(4)
+
+    for i, panel in enumerate(panels):
+        with cols[i % 4]:
+            if st.button(f"Panel {i + 1}", use_container_width=True):
+                st.session_state.selected_panel_id = panel["id"]
+else:
+    st.info("No panels available for this plant")
+
+
+
+if st.session_state.selected_panel_id is not None:
+    panel_id = st.session_state.selected_panel_id
+
+    st.markdown("---")
+    st.subheader("Panel measurements vs predictions")
+
+    panel_measurements = get_meaurements_by_panel_id(panel_id)
+    panel_predictions = get_predictions_by_panel_id(panel_id)
+
+    df_pm = to_dataframe(panel_measurements)
+    df_pp = to_dataframe(panel_predictions)
+
+    if not df_pm.empty or not df_pp.empty:
+        df_pm["type"] = "measured"
+        df_pp["type"] = "predicted"
+
+        combined_panel = pd.concat([df_pm, df_pp])
+
+        st.line_chart(
+            combined_panel.pivot(
+                index="timestamp",
+                columns="type",
+                values="ac_power"
+            )
+        )
+    else:
+        st.info("No data available for this panel")
+
+    if st.button("Clear panel selection"):
+        st.session_state.selected_panel_id = None
