@@ -82,10 +82,10 @@ panels = get_panels_by_plant_id(selected_plant_id)
 if panels:
     st.markdown("### Panels")
 
-    cols = st.columns(4)
+    cols = st.columns(6)
 
     for i, panel in enumerate(panels):
-        with cols[i % 4]:
+        with cols[i % 6]:
             if st.button(f"Panel {i + 1}", use_container_width=True):
                 st.session_state.selected_panel_id = panel["id"]
 else:
@@ -99,8 +99,8 @@ if st.session_state.selected_panel_id is not None:
     st.markdown("---")
     st.subheader("Panel measurements vs predictions")
 
-    panel_measurements = get_meaurements_by_panel_id(panel_id)
-    panel_predictions = get_predictions_by_panel_id(panel_id)
+    panel_measurements = get_meaurements_by_panel_id(selected_plant_id, panel_id)
+    panel_predictions = get_predictions_by_panel_id(selected_plant_id,panel_id)
 
     df_pm = to_dataframe(panel_measurements)
     df_pp = to_dataframe(panel_predictions)
