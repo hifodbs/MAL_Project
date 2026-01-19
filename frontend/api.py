@@ -29,7 +29,7 @@ def get_predictions_by_plant_id(plant_id):
 
     Returns:
         list: [
-            {"timestamp": ISO8601 string, "power": float},
+            {"timestamp": ISO8601 string, "ac_power": float},
             ...
         ]
     """
@@ -50,7 +50,7 @@ def get_measurements_by_plant_id(plant_id):
 
     Returns:
         list: [
-            {"timestamp": ISO8601 string, "power": float},
+            {"timestamp": ISO8601 string, "ac_power": float},
             ...
         ]
     """
@@ -60,4 +60,31 @@ def get_measurements_by_plant_id(plant_id):
         return response.json()
     except requests.RequestException as e:
         print(f"Error fetching predictions for plant {plant_id}: {e}")
+        return []
+
+def get_panels_by_plant_id(plant_id):
+    try:
+        response = requests.get(f"{BASE_URL}/plants/{plant_id}/panels")
+        response.raise_for_status()
+        return response.json()
+    except requests.RequestException as e:
+        print(f"Error fetching panels for plant {plant_id}: {e}")
+        return []
+
+def get_meaurements_by_panel_id(plant_id, panel_id):
+    try:
+        response = requests.get(f"{BASE_URL}/plants/{plant_id}/panels/{panel_id}/measurements")
+        response.raise_for_status()
+        return response.json()
+    except requests.RequestException as e:
+        print(f"Error fetching measurements for panel {panel_id}: {e}")
+        return []
+    
+def get_predictions_by_panel_id(plant_id, panel_id):
+    try:
+        response = requests.get(f"{BASE_URL}/plants/{plant_id}/panels/{panel_id}/predictions")
+        response.raise_for_status()
+        return response.json()
+    except requests.RequestException as e:
+        print(f"Error fetching predictions for panel {panel_id}: {e}")
         return []
