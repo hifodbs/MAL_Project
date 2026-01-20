@@ -41,11 +41,12 @@ class PanelsDAO:
 
 
 
-# testing 
-dao = PanelsDAO(data_directory="cleaned_data")
-plant = dao.get_all_by_plant_id("solar_2")
-print("idiota")
-
-print("Plants:")
-for p in plant[:50]: 
-    print(p)
+## testing 
+#dao = PanelsDAO(data_directory="cleaned_data")
+#panels = dao.get_all_by_plant_id("solar_2")
+#print(panels)
+#print("idiota")
+#
+#print("Plants:")
+#for p in plant[:50]: 
+#    print(p)

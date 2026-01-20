@@ -35,11 +35,11 @@ class PlantsDAO:
     
 
 
-# testing
-
-dao = PlantsDAO(data_directory="cleaned_data")
-plant = dao.get_all()
-
-print("Plants:")
-for p in plant[:5]: 
-    print(p)
+## testing
+#
+#dao = PlantsDAO(data_directory="cleaned_data")
+#plant = dao.get_all()
+#
+#print("Plants:")
+#for p in plant[:5]: 
+#    print(p)

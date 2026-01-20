@@ -54,13 +54,13 @@ class MeasurementsDAO:
         if not csv_file.exists():
             return []
 
-        end_time = start_time + timedelta(hours=hours)
+        end_time = start_time - timedelta(hours=hours)
 
         with open(csv_file, newline="") as f:
             reader = csv.DictReader(f)
             for row in reader:
                 m = self._parse_row(plant_id, row, panel_id)
-                if m is not None and start_time <= m.timestamp <= end_time:
+                if m is not None and start_time >= m.timestamp >= end_time:
                     measurements.append(m)
 
         return measurements
@@ -93,13 +93,13 @@ class MeasurementsDAO:
         if not csv_file.exists():
             return []
 
-        end_time = start_time + timedelta(hours=hours)
+        end_time = start_time - timedelta(hours=hours)
 
         with open(csv_file, newline="") as f:
             reader = csv.DictReader(f)
             for row in reader:
                 m = self._parse_row(plant_id, row)
-                if m is not None and start_time <= m.timestamp <= end_time:
+                if m is not None and start_time >= m.timestamp >= end_time:
                     measurements.append(m)
 
         return measurements
@@ -129,10 +129,10 @@ class MeasurementsDAO:
         
         measurements = []
 
-        end_time = start_time + timedelta(hours=hours)
+        end_time = start_time - timedelta(hours=hours)
 
         for m in all_measurements:
-            if m is not None and start_time <= m.timestamp <= end_time:
+            if m is not None and start_time >= m.timestamp >= end_time:
                 measurements.append(m)
 
         return measurements
@@ -141,27 +141,29 @@ class MeasurementsDAO:
 
 
 
-# this works if you use it as a module with python -m backend.dao.measurments_dao
-
-plant_id = "solar_1"
-
-
-dao = MeasurementsDAO(data_directory="cleaned_data")
-measurements = dao.get_all_global_measurements_by_plant_id(plant_id)
-
-print("\n\rGlobel measurements:")
-for m in measurements[:5]: 
-    print(m)
-
-
-
-dt_str = "2020-05-15 15:00:00"
-dt = datetime.strptime(dt_str, "%Y-%m-%d %H:%M:%S")
-print(dt)
-
-time_range_measurement = dao.get_global_measurements_by_plant_id_and_time_range(plant_id, dt, 5)
-
-print(f"\n\r{len(time_range_measurement)} measurements for datetime:")
-for i in range(3): 
-    print(time_range_measurement[i])
-    print(time_range_measurement[len(time_range_measurement) - 1 - i])
+## this works if you use it as a module with python -m backend.dao.measurments_dao
+#
+#plant_id = "solar_1"
+#panel_id = "pkci93gMrogZuBj" #this is a panel in solar_1
+#
+#dao = MeasurementsDAO(data_directory="cleaned_data")
+#measurements = dao.get_all_global_measurements_by_plant_id(plant_id)
+#
+#print("\n\rGlobel measurements:")
+#for m in measurements[:5]: 
+#    print(m)
+#
+#
+#
+#dt_str = "2020-05-15 15:00:00"
+#dt = datetime.strptime(dt_str, "%Y-%m-%d %H:%M:%S")
+#print(dt)
+#
+#time_range_global_measurement = dao.get_global_measurements_by_plant_id_and_time_range(plant_id, dt, 1)
+#time_range_panel_measurement = dao.get_panel_measurements_by_panel_id_and_time_range(plant_id, panel_id, dt, 1) 
+#
+#print(f"\n\r{len(time_range_global_measurement)} measurements for datetime:")
+#for i in range(len(time_range_global_measurement)):
+#    print(f"Iteration {i}")
+#    print(time_range_global_measurement[i])
+#    print(time_range_panel_measurement[i])
