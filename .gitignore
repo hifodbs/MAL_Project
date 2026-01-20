@@ -6,3 +6,4 @@ backend/models/__pycache__/
 backend/dao/__pycache__/
 backend/__pycache__/
 backend/description.txt
+__pycache__/
