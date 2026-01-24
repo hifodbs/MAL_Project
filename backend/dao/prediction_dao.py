@@ -54,7 +54,10 @@ class PredictionDao:
         if not csv_file.exists():
             return []
 
-        start_time = end_time - timedelta(hours=hours)
+        if hours != None:
+            start_time = end_time - timedelta(hours=hours)
+        else:
+            start_time = datetime.min
 
         with open(csv_file, newline="") as f:
             reader = csv.DictReader(f)
@@ -93,7 +96,10 @@ class PredictionDao:
         if not csv_file.exists():
             return []
 
-        start_time = end_time - timedelta(hours=hours)
+        if hours != None:
+            start_time = end_time - timedelta(hours=hours)
+        else:
+            start_time = datetime.min
 
         with open(csv_file, newline="") as f:
             reader = csv.DictReader(f)
@@ -142,7 +148,10 @@ class PredictionDao:
         
         prediction = []
 
-        start_time = end_time - timedelta(hours=hours)
+        if hours != None:
+            start_time = end_time - timedelta(hours=hours)
+        else:
+            start_time = datetime.min
 
         for m in all_prediction:
             if m is not None and start_time <= m.timestamp <= end_time:
@@ -151,6 +160,47 @@ class PredictionDao:
         return prediction
     
 
+    def save_prediction(self, prediction: PanelPrediction):
+
+        data_dir = Path(self.data_directory)
+        data_dir.mkdir(parents=True, exist_ok=True)
+
+        path = data_dir / f"{prediction.plant_id}.csv"
+
+        timestamp = prediction.timestamp.strftime("%Y-%m-%d %H:%M:%S")
+        plant_id = prediction.plant_id
+        panel_id = prediction.panel_id
+
+        if path.exists():
+            with path.open(mode="r", newline="") as f:
+                reader = csv.DictReader(f)
+                for row in reader:
+                    if (
+                        row["TIMESTAMP"] == timestamp
+                        and row["PLANT_ID"] == plant_id
+                        and row["PANEL_ID"] == panel_id
+                    ):
+                        return
+
+        write_header = not path.exists()
+
+        with path.open(mode="a", newline="") as f:
+            writer = csv.writer(f)
+
+            if write_header:
+                writer.writerow([
+                    "TIMESTAMP",
+                    "PLANT_ID",
+                    "PANEL_ID",
+                    "AC_POWER",
+                ])
+
+            writer.writerow([
+                timestamp,
+                prediction.plant_id,
+                prediction.panel_id,
+                prediction.ac_power,
+            ])
 
 
 
