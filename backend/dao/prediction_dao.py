@@ -6,7 +6,7 @@ from collections import defaultdict
 from backend.models.prediction import PanelPrediction, GlobalPrediction
 
 
-class PredictionDAO:
+class PredictionDao:
     def __init__(self, data_directory: str):
         self.data_directory = Path(data_directory)
 
