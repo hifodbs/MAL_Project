@@ -1,5 +1,6 @@
 from flask import Blueprint, jsonify, request
 from backend.services.panels_service import PanelsService
+from backend.services.prediction_service import PredictionService
 from datetime import datetime
 import random 
 
@@ -35,10 +36,10 @@ def get_measurements(plant_id, panel_id):
     #Each measurement: {"timestamp": ISO8601 string, "plant_id": string, "panel_id": string, "ac_power": float}
 
     hours = request.args.get("hours", default=24, type=int) 
-    starting_time = request.args.get("time", default="2020-05-31T00:00:00")
+    end_time = request.args.get("time", default="2020-05-31T00:00:00")
 
     try:
-        starting_time = datetime.fromisoformat(starting_time)
+        end_time = datetime.fromisoformat(end_time)
     except ValueError:
         return jsonify({"error": "Invalid time format. Use ISO 8601."}), 400
 
@@ -46,7 +47,7 @@ def get_measurements(plant_id, panel_id):
         measurements = panels_service.get_all_panel_measurements_by_id_and_time_reange(
             plant_id=plant_id,
             panel_id=panel_id,
-            start_time=starting_time,
+            end_time=end_time,
             hours=hours,
         )
         return jsonify([
@@ -74,10 +75,10 @@ def get_predictions(plant_id, panel_id):
     #Each prediction: {"timestamp": ISO8601 string, "plant_id": string, "panel_id": string, "ac_power": float}
 
     hours = request.args.get("hours", default=48, type=int) 
-    starting_time = request.args.get("time", default="2020-06-01T00:00:00")
+    end_time = request.args.get("time", default="2020-06-01T00:00:00")
 
     try:
-        starting_time = datetime.fromisoformat(starting_time)
+        end_time = datetime.fromisoformat(end_time)
     except ValueError:
         return jsonify({"error": "Invalid time format. Use ISO 8601."}), 400
 
@@ -85,7 +86,7 @@ def get_predictions(plant_id, panel_id):
         predictions = panels_service.get_all_panel_measurements_by_id_and_time_reange( #this is fake
             plant_id=plant_id,
             panel_id=panel_id,
-            start_time=starting_time,
+            end_time=end_time,
             hours=hours,
         )
         return jsonify([
