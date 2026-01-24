@@ -45,7 +45,7 @@ class MeasurementsDAO:
     
 
     def get_panel_measurements_by_panel_id_and_time_range(
-        self, plant_id: str, panel_id: str, start_time: datetime, hours: int
+        self, plant_id: str, panel_id: str, end_time: datetime, hours: int
     ) -> List[PanelMeasurement]:
         
         measurements = []
@@ -54,13 +54,13 @@ class MeasurementsDAO:
         if not csv_file.exists():
             return []
 
-        end_time = start_time - timedelta(hours=hours)
+        start_time = end_time - timedelta(hours=hours)
 
         with open(csv_file, newline="") as f:
             reader = csv.DictReader(f)
             for row in reader:
                 m = self._parse_row(plant_id, row, panel_id)
-                if m is not None and start_time >= m.timestamp >= end_time:
+                if m is not None and start_time <= m.timestamp <= end_time:
                     measurements.append(m)
 
         return measurements
@@ -84,7 +84,7 @@ class MeasurementsDAO:
 
 
     def get_panel_measurements_by_plant_id_and_time_range(
-        self, plant_id: str, start_time: datetime, hours: int
+        self, plant_id: str, end_time: datetime, hours: int
     ) -> List[PanelMeasurement]:
         
         measurements = []
@@ -93,16 +93,29 @@ class MeasurementsDAO:
         if not csv_file.exists():
             return []
 
-        end_time = start_time - timedelta(hours=hours)
+        start_time = end_time - timedelta(hours=hours)
 
         with open(csv_file, newline="") as f:
             reader = csv.DictReader(f)
             for row in reader:
                 m = self._parse_row(plant_id, row)
-                if m is not None and start_time >= m.timestamp >= end_time:
+                if m is not None and start_time <= m.timestamp <= end_time:
                     measurements.append(m)
 
         return measurements
+    
+
+    def get_all_panel_measurements(self) -> List[PanelMeasurement]:
+        
+        measurements = []
+
+        for csv in self.data_directory.iterdir():
+            plant_id = csv.stem
+            plant_measurements = self.get_all_panel_measurements_by_plant_id(plant_id)
+            measurements.extend(plant_measurements)
+
+        return measurements
+
 
 
     def get_all_global_measurements_by_plant_id(self, plant_id: str) -> List[GlobalMeasurement]:
@@ -122,17 +135,17 @@ class MeasurementsDAO:
 
 
     def get_global_measurements_by_plant_id_and_time_range(
-        self, plant_id: str, start_time: datetime, hours: int
+        self, plant_id: str, end_time: datetime, hours: int
     ) -> List[GlobalMeasurement]:
         
         all_measurements = self.get_all_global_measurements_by_plant_id(plant_id)
         
         measurements = []
 
-        end_time = start_time - timedelta(hours=hours)
+        start_time = end_time - timedelta(hours=hours)
 
         for m in all_measurements:
-            if m is not None and start_time >= m.timestamp >= end_time:
+            if m is not None and start_time <= m.timestamp <= end_time:
                 measurements.append(m)
 
         return measurements
@@ -153,8 +166,6 @@ class MeasurementsDAO:
 #for m in measurements[:5]: 
 #    print(m)
 #
-#
-#
 #dt_str = "2020-05-15 15:00:00"
 #dt = datetime.strptime(dt_str, "%Y-%m-%d %H:%M:%S")
 #print(dt)
@@ -167,3 +178,8 @@ class MeasurementsDAO:
 #    print(f"Iteration {i}")
 #    print(time_range_global_measurement[i])
 #    print(time_range_panel_measurement[i])
+#
+#all_measurements = dao.get_all_panel_measurements()
+#for i in range(3):
+#    print(all_measurements[i])
+#    print(all_measurements[len(all_measurements) - i - 1])
