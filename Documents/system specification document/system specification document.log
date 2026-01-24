@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2025/dev/Debian) (preloaded format=pdflatex 2025.12.17)  5 JAN 2026 15:28
+This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2025/dev/Debian) (preloaded format=pdflatex 2025.12.17)  24 JAN 2026 18:16
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -446,34 +446,44 @@ LaTeX Font Info:    External font `lmex10' loaded for size
 
 
 [3]
-LaTeX Font Info:    Trying to load font information for TS1+lmr on input line 110.
+
+[4{/usr/share/texmf/fonts/enc/dvips/lm/lm-mathit.enc}{/usr/share/texmf/fonts/enc/dvips/lm/lm-rm.enc}{/usr/share/texmf/fonts/enc/dvips/lm/lm-mathex.enc}{/usr/share/texmf/fonts/enc/dvips/lm/lm-mathsy.enc}]
+LaTeX Font Info:    Trying to load font information for TS1+lmr on input line 166.
  (/usr/share/texmf/tex/latex/lm/ts1lmr.fd
 File: ts1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
 
-[4{/usr/share/texmf/fonts/enc/dvips/lm/lm-ts1.enc}{/usr/share/texmf/fonts/enc/dvips/lm/lm-mathit.enc}{/usr/share/texmf/fonts/enc/dvips/lm/lm-rm.enc}]
+[5{/usr/share/texmf/fonts/enc/dvips/lm/lm-ts1.enc}]
+<img/DDSE.drawio.png, id=150, 447.6725pt x 120.45pt>
+File: img/DDSE.drawio.png Graphic file (type png)
+<use img/DDSE.drawio.png>
+Package pdftex.def Info: img/DDSE.drawio.png  used on input line 239.
+(pdftex.def)             Requested size: 318.66948pt x 85.74248pt.
 
-[5] (system specification document/system specification document.aux)
+
+[6 <./img/DDSE.drawio.png>] [7]
+
+[8] (system specification document/system specification document.aux)
  ***********
 LaTeX2e <2024-11-01> patch level 2
 L3 programming layer <2025-01-18>
  ***********
 Package rerunfilecheck Info: File `"system specification document".out' has not changed.
-(rerunfilecheck)             Checksum: 2FF6EC578256388DDF457F055E647C55;2656.
+(rerunfilecheck)             Checksum: 73FD84ABF5D8E57494D987BEFA4A658B;3023.
  ) 
 Here is how much of TeX's memory you used:
- 12178 strings out of 475135
- 189214 string characters out of 5765397
- 597976 words of memory out of 5000000
- 34983 multiletter control sequences out of 15000+600000
+ 12213 strings out of 475135
+ 189637 string characters out of 5765397
+ 599109 words of memory out of 5000000
+ 34998 multiletter control sequences out of 15000+600000
  605768 words of font info for 65 fonts, out of 8000000 for 9000
  36 hyphenation exceptions out of 8191
- 75i,11n,79p,350b,514s stack positions out of 10000i,1000n,20000p,200000b,200000s
-</usr/share/texmf/fonts/type1/public/lm/lmbx10.pfb></usr/share/texmf/fonts/type1/public/lm/lmbx12.pfb></usr/share/texmf/fonts/type1/public/lm/lmmi10.pfb></usr/share/texmf/fonts/type1/public/lm/lmr10.pfb></usr/share/texmf/fonts/type1/public/lm/lmr12.pfb></usr/share/texmf/fonts/type1/public/lm/lmr7.pfb>
-Output written on "system specification document/system specification document.pdf" (5 pages, 146404 bytes).
+ 75i,11n,79p,359b,568s stack positions out of 10000i,1000n,20000p,200000b,200000s
+</usr/share/texmf/fonts/type1/public/lm/lmbx10.pfb></usr/share/texmf/fonts/type1/public/lm/lmbx12.pfb></usr/share/texmf/fonts/type1/public/lm/lmex10.pfb></usr/share/texmf/fonts/type1/public/lm/lmmi10.pfb></usr/share/texmf/fonts/type1/public/lm/lmmi7.pfb></usr/share/texmf/fonts/type1/public/lm/lmr10.pfb></usr/share/texmf/fonts/type1/public/lm/lmr12.pfb></usr/share/texmf/fonts/type1/public/lm/lmr7.pfb></usr/share/texmf/fonts/type1/public/lm/lmsy10.pfb>
+Output written on "system specification document/system specification document.pdf" (8 pages, 176676 bytes).
 PDF statistics:
- 173 PDF objects out of 1000 (max. 8388607)
- 151 compressed objects within 2 object streams
- 33 named destinations out of 1000 (max. 500000)
- 145 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 239 PDF objects out of 1000 (max. 8388607)
+ 204 compressed objects within 3 object streams
+ 51 named destinations out of 1000 (max. 500000)
+ 166 words of extra memory for PDF output out of 10000 (max. 10000000)
 
