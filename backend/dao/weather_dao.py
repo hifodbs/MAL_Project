@@ -59,8 +59,10 @@ class WeatheDAO:
             return []
         
         seen_timestamps = set()
-
-        start_time = end_time - timedelta(hours=hours)
+        if hours is not None:
+            start_time = end_time - timedelta(hours=hours)
+        else: 
+            start_time = datetime.min
 
         with open(csv_file, newline="") as f:
             reader = csv.DictReader(f)

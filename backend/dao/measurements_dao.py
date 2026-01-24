@@ -54,7 +54,10 @@ class MeasurementsDAO:
         if not csv_file.exists():
             return []
 
-        start_time = end_time - timedelta(hours=hours)
+        if hours != None:
+            start_time = end_time - timedelta(hours=hours)
+        else:
+            start_time = datetime.min
 
         with open(csv_file, newline="") as f:
             reader = csv.DictReader(f)
@@ -92,8 +95,11 @@ class MeasurementsDAO:
         csv_file = self.data_directory / f"{plant_id}.csv"
         if not csv_file.exists():
             return []
-
-        start_time = end_time - timedelta(hours=hours)
+        
+        if hours != None:
+            start_time = end_time - timedelta(hours=hours)
+        else:
+            start_time = datetime.min
 
         with open(csv_file, newline="") as f:
             reader = csv.DictReader(f)
@@ -142,7 +148,10 @@ class MeasurementsDAO:
         
         measurements = []
 
-        start_time = end_time - timedelta(hours=hours)
+        if hours != None:
+            start_time = end_time - timedelta(hours=hours)
+        else:
+            start_time = datetime.min
 
         for m in all_measurements:
             if m is not None and start_time <= m.timestamp <= end_time:
