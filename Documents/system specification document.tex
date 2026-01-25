@@ -93,7 +93,8 @@ of solar power output to support operational decision-making.
 
 \subsection{Machine Learning Problem Formulation}
 
-Given historical weather data (temperature, irradiance), predict the energy produced by the plant for the next timestamp.  
+Given historical and the forecast weather data (temperature, irradiance) plus the historical power data, 
+predict the energy produced by the plant for the next timestamp.  
 The dataset used provides measurements every 15 minutes.  
 
 This is formulated as a supervised regression problem using an incremental Hoeffding Tree Regressor, 
@@ -101,11 +102,22 @@ with an optional extension to a Long Short-Term Memory (LSTM) model for a day wi
 
 \subsection{Key Performance Indicators (KPIs)}
 
-A custom KPI is used: for each day, the mean squared error (MSE) is calculated for each timestamp, and the daily mean is taken:
 
-\[
-C_{kpi} = \frac{\sum_{i=0}^{T} MSE_i}{|T|}
-\]
+A custom KPI is used for model evaluation and monitoring. The KPI focuses on daily prediction accuracy, measuring 
+the ratio between the sum of Mean Absolute Errors (MAE) over the sum of actual power values for that day.
+The error is expressed as a percentage to facilitate interpretation and set thresholds for alerts.
+
+The KPI is defined as follows:
+
+\[ KPI = \frac{\sum_{i=1}^{N} |y_i - \hat{y}_i|}{\sum_{i=1}^{N} y_i} * 100 \]
+
+Where:
+\begin{itemize}
+  \item \( y_i \) = Actual power output at timestamp \( i \)  
+  \item \( \hat{y}_i \) = Predicted power output at timestamp \( i \)  
+  \item \( N \) = Total number of timestamps in the day
+\end{itemize} 
+
 
 % =================================================
 % 2. Data Specification
@@ -167,9 +179,8 @@ Missing Values:
   \item Missing AC/DC power values:  
     \begin{itemize}
       \item At night (no irradiation), zeros are inserted.  
-      \item During the day, linear interpolation (with median used for better quality).  
+      \item During the day, linear interpolation (with median used for lack of data).  
     \end{itemize}  
-  \item Daily and total yield are forward-filled.  
 \end{itemize}
 
 Outliers: (e.g., zero AC power during daytime) are corrected using linear interpolation.
@@ -186,6 +197,7 @@ The system shall provide the following use cases:
   \item Visualize the real-time power output of the plant.  
   \item Predict the power for the next timestamp.  
   \item Generate an end-of-day report comparing predicted and actual power.
+  \item Train the ILSTM for day-ahead forecasting (optional).
 \end{itemize}
 
 
@@ -196,7 +208,7 @@ The system shall provide the following use cases:
 ID & Description \\ \midrule
 FR-01 & The system shall ingest historical data. \\
 FR-02 & The model shall forecast the next timestamp. \\
-FR-03 & The model shall detect drift in plant power production. \\
+FR-03 & The model shall detect and display drift for each panel  \\
 FR-04 & The system shall display predicted vs actual power generation per timestamp. \\
 FR-05 & The dashboard shall produce an end-of-day report for each plant. \\
 \bottomrule
@@ -231,7 +243,7 @@ NFR-07 & The dashboard shall maintain at least 99\% uptime during operational ho
 
 The system consists of two components:  
 1. Dashboard (Streamlit) for end users to visualize predictions.  
-2. Server-side service (Flask) for predictions and sensor data access via a DAO.
+2. Server-side service (Flask) for predictions and sensor data access via a DAO (Data Access Object).
 The DAO provides synthetic sensor readings to simulate a real-world scenario. 
 
 \begin{figure}[h]
@@ -242,7 +254,7 @@ The DAO provides synthetic sensor readings to simulate a real-world scenario.
 
 \subsection{Training}
 \begin{itemize}
-    \item The model is trained incrementally from the first data point.
+    \item If no train model exist, use historical data to initialize the Hoeffding Tree Regressor to avoid cold start.
     \item Each new sensor reading immediately updates the Hoeffding Tree Regressor.
     \item No offline batch retraining is required; the pipeline supports fully online learning.
 \end{itemize}
