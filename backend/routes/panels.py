@@ -1,13 +1,22 @@
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request, current_app
 from backend.services.panels_service import PanelsService
 from backend.services.prediction_service import PredictionService
 from datetime import datetime
-import random 
 
 panels_bp = Blueprint( "panels", __name__ )
 
 data_directory = "cleaned_data"
+historical_predictions = "historical_predictions"
 panels_service = PanelsService(data_directory)
+
+
+def get_prediction_service():
+    return PredictionService(
+        models=current_app.models,
+        data_directory=current_app.config["DATA_DIRECTORY"],
+        historical_predictions=current_app.config["HISTORICAL_PREDICTIONS"],
+    )
+
 
 # GET /plants/<plant_id>/panels
 
@@ -35,20 +44,32 @@ def get_measurements(plant_id, panel_id):
     #Returns a list of measurements for a specific panel.
     #Each measurement: {"timestamp": ISO8601 string, "plant_id": string, "panel_id": string, "ac_power": float}
 
-    hours = request.args.get("hours", default=24, type=int) 
-    end_time = request.args.get("time", default="2020-05-31T00:00:00")
+    start_time_str = request.args.get("start_time", default=None)
+    end_time_str = request.args.get("time", default="2020-06-14T10:45:00")
 
-    try:
-        end_time = datetime.fromisoformat(end_time)
-    except ValueError:
-        return jsonify({"error": "Invalid time format. Use ISO 8601."}), 400
+    if start_time_str:
+        try:
+            start_time = datetime.fromisoformat(start_time)
+        except ValueError:
+            return jsonify({"error": "Invalid time format. Use ISO 8601."}), 400
+    else:
+        start_time = None
+
+    if end_time_str:
+        try:
+            end_time = datetime.fromisoformat(end_time_str)
+        except ValueError:
+            return jsonify({"error": "Invalid time format. Use ISO 8601."}), 400
+    else:
+        end_time = None
+
 
     try:
         measurements = panels_service.get_all_panel_measurements_by_id_and_time_reange(
             plant_id=plant_id,
             panel_id=panel_id,
-            end_time=end_time,
-            hours=hours,
+            start_time=start_time,
+            end_time=end_time
         )
         return jsonify([
             {
@@ -65,42 +86,77 @@ def get_measurements(plant_id, panel_id):
 
 # GET /plants/<plant_id>/panels/<panel_id>/predictions
 
+
 @panels_bp.route(
     "/plants/<plant_id>/panels/<panel_id>/predictions",
     methods=["GET"],
 )
-def get_predictions(plant_id, panel_id):
+def get_panels_predictions(plant_id, panel_id):
+    
+    start_time_str = request.args.get("start_time", default=None)
+    end_time_str = request.args.get("time", default="2020-06-14T10:45:00")
 
-    #Returns a list of predictions for a specific panel.
-    #Each prediction: {"timestamp": ISO8601 string, "plant_id": string, "panel_id": string, "ac_power": float}
+    if start_time_str:
+        try:
+            start_time = datetime.fromisoformat(start_time)
+        except ValueError:
+            return jsonify({"error": "Invalid time format. Use ISO 8601."}), 400
+    else:
+        start_time = None
 
-    hours = request.args.get("hours", default=48, type=int) 
-    end_time = request.args.get("time", default="2020-06-01T00:00:00")
+    if end_time_str:
+        try:
+            end_time = datetime.fromisoformat(end_time_str)
+        except ValueError:
+            return jsonify({"error": "Invalid time format. Use ISO 8601."}), 400
+    else:
+        end_time = None
 
+
+    predictions_service = get_prediction_service()
     try:
-        end_time = datetime.fromisoformat(end_time)
-    except ValueError:
-        return jsonify({"error": "Invalid time format. Use ISO 8601."}), 400
-
-    try:
-        predictions = panels_service.get_all_panel_measurements_by_id_and_time_reange( #this is fake
+        predictions = predictions_service.predict_panel(
             plant_id=plant_id,
             panel_id=panel_id,
-            end_time=end_time,
-            hours=hours,
+            start_time=start_time,
+            end_time=end_time
+            
         )
-        return jsonify([
-            {
-                "timestamp": p.timestamp.isoformat(),
-                "plant_id": p.plant_id,
-                "panel_id": p.panel_id,
-                "ac_power": p.ac_power * random.uniform(0.5, 1.5),
-            }
-            for p in predictions
-        ]), 200
-    except Exception as e:
+        return jsonify(predictions), 200
+    except ValueError as e:
         return jsonify({"error": str(e)}), 500
     
+
+# GET /plants/<plant_id>/panels/<panel_id>/new_prediction
+
+
+@panels_bp.route(
+    "/plants/<plant_id>/panels/<panel_id>/new_prediction",
+    methods=["GET"],
+)
+def get_new_prediction_by_panel_id(plant_id, panel_id):
+
+    time_str = request.args.get("time", default=None)
+
+    if time_str is not None:
+        try:
+            time = datetime.fromisoformat(time_str)
+        except ValueError:
+            return jsonify({"error": "Invalid time format. Use ISO 8601."}), 400
+    else:
+        time = None
+
+    try:
+        predictions_service = get_prediction_service()
+        predictions = predictions_service.train_next_timestamp(
+            plant_id=plant_id,
+            panel_id=panel_id,
+            timestamp=time,
+        )
+        return jsonify(predictions), 200
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 
 ##testing
