@@ -27,7 +27,25 @@ class MeasurementsDAO:
             return None
 
 
-    def get_all_panel_measurements_by_panel_id(self, plant_id: str, panel_id: str) -> List[PanelMeasurement]:
+    def get_panel_measurement_by_plant_id_and_panel_id_and_timestamp(
+        self, plant_id: str, panel_id: str, timestamp: datetime
+    ) -> List[PanelMeasurement]:
+
+        csv_file = self.data_directory / f"{plant_id}.csv"
+        if not csv_file.exists():
+            return
+        else:
+            with open(csv_file, newline="") as f:
+                reader = csv.DictReader(f)
+                for row in reader:
+                    measurement = self._parse_row(plant_id, row, panel_id)
+                    if measurement is not None and  measurement.timestamp == timestamp and measurement.panel_id == panel_id:
+                        return measurement
+
+        return
+
+
+    def get_all_panel_measurements_by_plant_id_and_panel_id(self, plant_id: str, panel_id: str) -> List[PanelMeasurement]:
         
         measurements = []
 
@@ -45,7 +63,7 @@ class MeasurementsDAO:
     
 
     def get_panel_measurements_by_panel_id_and_time_range(
-        self, plant_id: str, panel_id: str, end_time: datetime, hours: int
+        self, plant_id: str, panel_id: str, start_time: datetime = None, end_time: datetime = None
     ) -> List[PanelMeasurement]:
         
         measurements = []
@@ -54,9 +72,13 @@ class MeasurementsDAO:
         if not csv_file.exists():
             return []
 
-        if hours != None:
-            start_time = end_time - timedelta(hours=hours)
-        else:
+
+        if end_time is None and start_time is None:
+            return self.get_all_panel_measurements_by_plant_id_and_panel_id(plant_id, panel_id)
+        
+        if end_time is None:
+            end_time = datetime.max
+        if start_time is None:
             start_time = datetime.min
 
         with open(csv_file, newline="") as f:
@@ -87,7 +109,7 @@ class MeasurementsDAO:
 
 
     def get_panel_measurements_by_plant_id_and_time_range(
-        self, plant_id: str, end_time: datetime, hours: int
+        self, plant_id: str, start_time: datetime = None, end_time: datetime = None
     ) -> List[PanelMeasurement]:
         
         measurements = []
@@ -96,10 +118,14 @@ class MeasurementsDAO:
         if not csv_file.exists():
             return []
         
-        if hours != None:
-            start_time = end_time - timedelta(hours=hours)
-        else:
+        if start_time is None and end_time is None:
+            return self.get_all_panel_measurements_by_plant_id(plant_id=plant_id)
+
+        if start_time is None:
             start_time = datetime.min
+
+        if end_time is None:
+            end_time = datetime.max
 
         with open(csv_file, newline="") as f:
             reader = csv.DictReader(f)
@@ -141,16 +167,19 @@ class MeasurementsDAO:
 
 
     def get_global_measurements_by_plant_id_and_time_range(
-        self, plant_id: str, end_time: datetime, hours: int
+        self, plant_id: str, start_time: datetime, end_time: datetime
     ) -> List[GlobalMeasurement]:
         
         all_measurements = self.get_all_global_measurements_by_plant_id(plant_id)
         
+        if end_time is None and start_time is None:
+            return all_measurements
         measurements = []
 
-        if hours != None:
-            start_time = end_time - timedelta(hours=hours)
-        else:
+        if end_time is None:
+            end_time = datetime.max
+        
+        if start_time is None:
             start_time = datetime.min
 
         for m in all_measurements:
