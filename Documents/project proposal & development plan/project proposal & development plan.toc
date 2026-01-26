@@ -1,14 +1,14 @@
-\contentsline {subsection}{\numberline {0.1}Project Summary}{3}{subsection.0.1}%
-\contentsline {subsubsection}{\numberline {0.1.1}Scope}{3}{subsubsection.0.1.1}%
-\contentsline {subsubsection}{\numberline {0.1.2}Objectives}{3}{subsubsection.0.1.2}%
-\contentsline {subsubsection}{\numberline {0.1.3}Relevance}{3}{subsubsection.0.1.3}%
-\contentsline {section}{\numberline {1}Deliverables}{3}{section.1}%
-\contentsline {subsection}{\numberline {1.1}Milestones}{3}{subsection.1.1}%
-\contentsline {subsection}{\numberline {1.2}Work Breakdown Structure}{3}{subsection.1.2}%
-\contentsline {subsubsection}{\numberline {1.2.1}Project Manager}{3}{subsubsection.1.2.1}%
-\contentsline {subsubsection}{\numberline {1.2.2}Data Analyst}{3}{subsubsection.1.2.2}%
-\contentsline {subsubsection}{\numberline {1.2.3}Developer}{4}{subsubsection.1.2.3}%
-\contentsline {subsection}{\numberline {1.3}Sprint Plan}{4}{subsection.1.3}%
-\contentsline {subsection}{\numberline {1.4}Definition of Ready (DoR)}{4}{subsection.1.4}%
-\contentsline {subsection}{\numberline {1.5}Definition of Done (DoD)}{4}{subsection.1.5}%
-\contentsline {subsection}{\numberline {1.6}Resources and Infrastructure}{4}{subsection.1.6}%
+\contentsline {section}{\numberline {1}Project Summary}{3}{section.1}%
+\contentsline {subsection}{\numberline {1.1}Scope}{3}{subsection.1.1}%
+\contentsline {subsection}{\numberline {1.2}Objectives}{3}{subsection.1.2}%
+\contentsline {subsection}{\numberline {1.3}Relevance}{3}{subsection.1.3}%
+\contentsline {section}{\numberline {2}Deliverables}{3}{section.2}%
+\contentsline {subsection}{\numberline {2.1}Milestones}{4}{subsection.2.1}%
+\contentsline {subsection}{\numberline {2.2}Work Breakdown Structure}{4}{subsection.2.2}%
+\contentsline {subsubsection}{\numberline {2.2.1}Project Manager}{4}{subsubsection.2.2.1}%
+\contentsline {subsubsection}{\numberline {2.2.2}Data Analyst / ML Engineer}{4}{subsubsection.2.2.2}%
+\contentsline {subsubsection}{\numberline {2.2.3}Software Developer}{4}{subsubsection.2.2.3}%
+\contentsline {subsection}{\numberline {2.3}Sprint Plan}{4}{subsection.2.3}%
+\contentsline {subsection}{\numberline {2.4}Definition of Ready (DoR)}{5}{subsection.2.4}%
+\contentsline {subsection}{\numberline {2.5}Definition of Done (DoD)}{5}{subsection.2.5}%
+\contentsline {subsection}{\numberline {2.6}Resources and Infrastructure}{6}{subsection.2.6}%
