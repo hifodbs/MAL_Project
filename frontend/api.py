@@ -20,7 +20,7 @@ def get_plants():
         print(f"Error fetching plants: {e}")
         return 
     
-def get_predictions_by_plant_id(plant_id):
+def get_predictions_by_plant_id(plant_id, time):
     """
     Fetch predictions for a specific plant from the Flask API.
 
@@ -34,6 +34,9 @@ def get_predictions_by_plant_id(plant_id):
         ]
     """
     try:
+        params = {}
+        if time is not None:
+            params["time"] = time
         response = requests.get(f"{BASE_URL}/plants/{plant_id}/predictions")
         response.raise_for_status()
         return response.json()
@@ -41,7 +44,7 @@ def get_predictions_by_plant_id(plant_id):
         print(f"Error fetching predictions for plant {plant_id}: {e}")
         return []
     
-def get_measurements_by_plant_id(plant_id):
+def get_measurements_by_plant_id(plant_id, time = None):
     """
     Fetch measurements for a specific plant from the Flask API.
 
@@ -55,6 +58,9 @@ def get_measurements_by_plant_id(plant_id):
         ]
     """
     try:
+        params = {}
+        if time is not None:
+            params["time"] = time
         response = requests.get(f"{BASE_URL}/plants/{plant_id}/measurements")
         response.raise_for_status()
         return response.json()
@@ -71,8 +77,11 @@ def get_panels_by_plant_id(plant_id):
         print(f"Error fetching panels for plant {plant_id}: {e}")
         return []
 
-def get_meaurements_by_panel_id(plant_id, panel_id):
+def get_meaurements_by_panel_id(plant_id, panel_id, time):
     try:
+        params = {}
+        if time is not None:
+            params["time"] = time
         response = requests.get(f"{BASE_URL}/plants/{plant_id}/panels/{panel_id}/measurements")
         response.raise_for_status()
         return response.json()
@@ -80,11 +89,48 @@ def get_meaurements_by_panel_id(plant_id, panel_id):
         print(f"Error fetching measurements for panel {panel_id}: {e}")
         return []
     
-def get_predictions_by_panel_id(plant_id, panel_id):
+def get_predictions_by_panel_id(plant_id, panel_id, time=None):
     try:
+        params = {}
+        if time is not None:
+            params["time"] = time
         response = requests.get(f"{BASE_URL}/plants/{plant_id}/panels/{panel_id}/predictions")
         response.raise_for_status()
         return response.json()
     except requests.RequestException as e:
         print(f"Error fetching predictions for panel {panel_id}: {e}")
+        return []
+
+def get_new_prediction_by_panel_id(plant_id, panel_id, time=None):
+    try:
+        params = {}
+        if time is not None:
+            params["time"] = time 
+
+        response = requests.get(
+            f"{BASE_URL}/plants/{plant_id}/panels/{panel_id}/new_prediction",
+            params=params
+        )
+        response.raise_for_status()
+        return response.json()
+
+    except requests.RequestException as e:
+        print(f"Error fetching predictions for panel {panel_id}: {e}")
+        return []
+    
+def get_new_prediction_by_plant_id(plant_id, time=None):
+    try:
+        params = {}
+        if time is not None:
+            params["time"] = time 
+
+        response = requests.get(
+            f"{BASE_URL}/plants/{plant_id}/new_prediction",
+            params=params
+        )
+        response.raise_for_status()
+        return response.json()
+
+    except requests.RequestException as e:
+        print(f"Error fetching predictions for panel {plant_id}: {e}")
         return []
