@@ -3,12 +3,32 @@ from datetime import datetime, timedelta
 from typing import List
 from pathlib import Path
 from collections import defaultdict
-from backend.models.prediction import PanelPrediction, GlobalPrediction
+from backend.models.prediction import PanelPrediction, GlobalPrediction, HistoricalPrediction
 
 
 class PredictionDao:
-    def __init__(self, data_directory: str):
+    def __init__(self, data_directory: str = "historical_predictions"):
         self.data_directory = Path(data_directory)
+        self._index = {}
+
+
+    def _load_index(self, path: Path):
+        if path in self._index:
+            return
+
+        seen = set()
+
+        if path.exists():
+            with path.open("r", newline="") as f:
+                reader = csv.DictReader(f)
+                for row in reader:
+                    seen.add((
+                        row["TIMESTAMP"],
+                        row["PLANT_ID"],
+                        row["PANEL_ID"],
+                    ))
+
+        self._index[path] = seen
 
 
     def _parse_row(self, plant_id: str, row: dict, panel_id: str = None) -> PanelPrediction:
@@ -21,13 +41,13 @@ class PredictionDao:
                 timestamp=datetime.strptime(row["DATE_TIME"], "%Y-%m-%d %H:%M:%S"),
                 plant_id=plant_id,
                 panel_id=row["SOURCE_KEY"],
-                ac_power=float(row["AC_POWER"]),
+                ac_power=float(row["PREDICTED_AC_POWER"]),
             )
         except (KeyError, ValueError, TypeError):
             return None
 
 
-    def get_all_panel_prediction_by_panel_id(self, plant_id: str, panel_id: str) -> List[PanelPrediction]:
+    def get_all_panel_predictions_by_panel_id(self, plant_id: str, panel_id: str) -> List[PanelPrediction]:
         
         prediction = []
 
@@ -44,8 +64,8 @@ class PredictionDao:
         return prediction
     
 
-    def get_panel_prediction_by_panel_id_and_time_range(
-        self, plant_id: str, panel_id: str, end_time: datetime, hours: int
+    def get_panel_predictions_by_panel_id_and_time_range(
+        self, plant_id: str, panel_id: str, start_time: datetime = None, end_time: datetime = None
     ) -> List[PanelPrediction]:
         
         prediction = []
@@ -54,9 +74,13 @@ class PredictionDao:
         if not csv_file.exists():
             return []
 
-        if hours != None:
-            start_time = end_time - timedelta(hours=hours)
-        else:
+        if end_time is None and start_time is None:
+            return self.get_all_panel_predictions_by_panel_id(panel_id=panel_id)
+
+        if end_time is None:
+            end_time = start_time.max
+        
+        if start_time is None:
             start_time = datetime.min
 
         with open(csv_file, newline="") as f:
@@ -69,7 +93,7 @@ class PredictionDao:
         return prediction
 
 
-    def get_all_panel_prediction_by_plant_id(self, plant_id: str) -> List[PanelPrediction]:
+    def get_all_panel_predictions_by_plant_id(self, plant_id: str) -> List[PanelPrediction]:
         
         prediction = []
 
@@ -86,8 +110,8 @@ class PredictionDao:
         return prediction
 
 
-    def get_panel_prediction_by_plant_id_and_time_range(
-        self, plant_id: str, end_time: datetime, hours: int
+    def get_panel_predictions_by_plant_id_and_time_range(
+        self, plant_id: str, start_time: datetime = None, end_time: datetime = None
     ) -> List[PanelPrediction]:
         
         prediction = []
@@ -96,9 +120,9 @@ class PredictionDao:
         if not csv_file.exists():
             return []
 
-        if hours != None:
-            start_time = end_time - timedelta(hours=hours)
-        else:
+        if end_time is None:
+            end_time = datetime.max
+        if start_time is None:
             start_time = datetime.min
 
         with open(csv_file, newline="") as f:
@@ -111,22 +135,22 @@ class PredictionDao:
         return prediction
     
 
-    def get_all_panel_prediction(self) -> List[PanelPrediction]:
+    def get_all_panel_predictions(self) -> List[PanelPrediction]:
         
         prediction = []
 
         for csv in self.data_directory.iterdir():
             plant_id = csv.stem
-            plant_prediction = self.get_all_panel_prediction_by_plant_id(plant_id)
+            plant_prediction = self.get_all_panel_predictions_by_plant_id(plant_id)
             prediction.extend(plant_prediction)
 
         return prediction
 
 
 
-    def get_all_global_prediction_by_plant_id(self, plant_id: str) -> List[GlobalPrediction]:
+    def get_all_global_predictions_by_plant_id(self, plant_id: str) -> List[GlobalPrediction]:
         
-        panel_prediction = self.get_all_panel_prediction_by_plant_id(plant_id)
+        panel_prediction = self.get_all_panel_predictions_by_plant_id(plant_id)
 
         agg: dict[datetime, float] = defaultdict(float)
         for m in panel_prediction:
@@ -140,17 +164,20 @@ class PredictionDao:
         return global_prediction
 
 
-    def get_global_prediction_by_plant_id_and_time_range(
-        self, plant_id: str, end_time: datetime, hours: int
+    def get_global_predictions_by_plant_id_and_time_range(
+        self, plant_id: str, start_time: datetime = None, end_time: datetime = None
     ) -> List[GlobalPrediction]:
         
-        all_prediction = self.get_all_global_prediction_by_plant_id(plant_id)
-        
+        all_prediction = self.get_all_global_predictions_by_plant_id(plant_id)
+
+        if end_time is None and start_time is None:
+            return all_prediction
+
         prediction = []
 
-        if hours != None:
-            start_time = end_time - timedelta(hours=hours)
-        else:
+        if end_time is None:
+            end_time = datetime.max
+        if start_time is None:
             start_time = datetime.min
 
         for m in all_prediction:
@@ -160,31 +187,26 @@ class PredictionDao:
         return prediction
     
 
-    def save_prediction(self, prediction: PanelPrediction):
-
+    def save_prediction(self, prediction: HistoricalPrediction):
         data_dir = Path(self.data_directory)
         data_dir.mkdir(parents=True, exist_ok=True)
 
         path = data_dir / f"{prediction.plant_id}.csv"
 
-        timestamp = prediction.timestamp.strftime("%Y-%m-%d %H:%M:%S")
-        plant_id = prediction.plant_id
-        panel_id = prediction.panel_id
+        self._load_index(path)
 
-        if path.exists():
-            with path.open(mode="r", newline="") as f:
-                reader = csv.DictReader(f)
-                for row in reader:
-                    if (
-                        row["TIMESTAMP"] == timestamp
-                        and row["PLANT_ID"] == plant_id
-                        and row["PANEL_ID"] == panel_id
-                    ):
-                        return
+        timestamp = prediction.timestamp.strftime("%Y-%m-%d %H:%M:%S")
+        plant_id = str(prediction.plant_id)
+        panel_id = str(prediction.panel_id)
+
+        key = (timestamp, plant_id, panel_id)
+
+        if key in self._index[path]:
+            return
 
         write_header = not path.exists()
 
-        with path.open(mode="a", newline="") as f:
+        with path.open("a", newline="") as f:
             writer = csv.writer(f)
 
             if write_header:
@@ -192,16 +214,21 @@ class PredictionDao:
                     "TIMESTAMP",
                     "PLANT_ID",
                     "PANEL_ID",
-                    "AC_POWER",
+                    "PREDICTED_AC_POWER",
+                    "REAL_AC_POWER",
+                    "DRIFT"
                 ])
 
             writer.writerow([
                 timestamp,
-                prediction.plant_id,
-                prediction.panel_id,
-                prediction.ac_power,
+                plant_id,
+                panel_id,
+                prediction.predicted_ac_power,
+                prediction.real_ac_power,
+                prediction.drift
             ])
 
+        self._index[path].add(key)
 
 
 ## this works if you use it as a module with python -m backend.dao.measurments_dao
