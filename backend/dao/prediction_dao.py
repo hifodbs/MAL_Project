@@ -31,23 +31,26 @@ class PredictionDao:
         self._index[path] = seen
 
 
-    def _parse_row(self, plant_id: str, row: dict, panel_id: str = None) -> PanelPrediction:
+    def _parse_row(self, plant_id: str, row: dict, panel_id: str = None) -> HistoricalPrediction:
 
         try:
             if panel_id is not None and row.get("SOURCE_KEY") != panel_id:
                 return None  
 
-            return PanelPrediction(
+            return HistoricalPrediction(
                 timestamp=datetime.strptime(row["DATE_TIME"], "%Y-%m-%d %H:%M:%S"),
                 plant_id=plant_id,
                 panel_id=row["SOURCE_KEY"],
-                ac_power=float(row["PREDICTED_AC_POWER"]),
+                predicted_ac_power=float(row["PREDICTED_AC_POWER"]),
+                real_ac_power=float(row["REAL_AC_POWER"]),
+                drift=bool(row["DRIFT"])
+
             )
         except (KeyError, ValueError, TypeError):
             return None
 
 
-    def get_all_panel_predictions_by_panel_id(self, plant_id: str, panel_id: str) -> List[PanelPrediction]:
+    def get_all_panel_predictions_by_panel_id(self, plant_id: str, panel_id: str) -> List[HistoricalPrediction]:
         
         prediction = []
 
@@ -66,7 +69,7 @@ class PredictionDao:
 
     def get_panel_predictions_by_panel_id_and_time_range(
         self, plant_id: str, panel_id: str, start_time: datetime = None, end_time: datetime = None
-    ) -> List[PanelPrediction]:
+    ) -> List[HistoricalPrediction]:
         
         prediction = []
 
@@ -93,7 +96,7 @@ class PredictionDao:
         return prediction
 
 
-    def get_all_panel_predictions_by_plant_id(self, plant_id: str) -> List[PanelPrediction]:
+    def get_all_panel_predictions_by_plant_id(self, plant_id: str) -> List[HistoricalPrediction]:
         
         prediction = []
 
@@ -112,7 +115,7 @@ class PredictionDao:
 
     def get_panel_predictions_by_plant_id_and_time_range(
         self, plant_id: str, start_time: datetime = None, end_time: datetime = None
-    ) -> List[PanelPrediction]:
+    ) -> List[HistoricalPrediction]:
         
         prediction = []
 
@@ -135,7 +138,7 @@ class PredictionDao:
         return prediction
     
 
-    def get_all_panel_predictions(self) -> List[PanelPrediction]:
+    def get_all_panel_predictions(self) -> List[HistoricalPrediction]:
         
         prediction = []
 
