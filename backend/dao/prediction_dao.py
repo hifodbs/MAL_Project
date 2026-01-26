@@ -23,7 +23,7 @@ class PredictionDao:
                 reader = csv.DictReader(f)
                 for row in reader:
                     seen.add((
-                        row["TIMESTAMP"],
+                        row["DATE_TIME"],
                         row["PLANT_ID"],
                         row["PANEL_ID"],
                     ))
@@ -211,7 +211,7 @@ class PredictionDao:
 
             if write_header:
                 writer.writerow([
-                    "TIMESTAMP",
+                    "DATE_TIME",
                     "PLANT_ID",
                     "PANEL_ID",
                     "PREDICTED_AC_POWER",
@@ -236,8 +236,8 @@ class PredictionDao:
 #plant_id = "solar_1"
 #panel_id = "pkci93gMrogZuBj" #this is a panel in solar_1
 #
-#dao = predictionDAO(data_directory="cleaned_data")
-#prediction = dao.get_all_global_prediction_by_plant_id(plant_id)
+#dao = PredictionDao(data_directory="historical_predictions")
+#prediction = dao.get_all_global_predictions_by_plant_id(plant_id)
 #
 #print("\n\rGlobel prediction:")
 #for m in prediction[:5]: 
@@ -247,16 +247,11 @@ class PredictionDao:
 #dt = datetime.strptime(dt_str, "%Y-%m-%d %H:%M:%S")
 #print(dt)
 #
-#time_range_global_measurement = dao.get_global_prediction_by_plant_id_and_time_range(plant_id, dt, 1)
-#time_range_panel_measurement = dao.get_panel_prediction_by_panel_id_and_time_range(plant_id, panel_id, dt, 1) 
+#time_range_global_measurement = dao.get_global_predictions_by_plant_id_and_time_range(plant_id, end_time=dt)
+#time_range_panel_measurement = dao.get_panel_predictions_by_plant_id_and_time_range(plant_id, end_time=dt) 
 #
 #print(f"\n\r{len(time_range_global_measurement)} prediction for datetime:")
 #for i in range(len(time_range_global_measurement)):
 #    print(f"Iteration {i}")
 #    print(time_range_global_measurement[i])
 #    print(time_range_panel_measurement[i])
-#
-#all_prediction = dao.get_all_panel_prediction()
-#for i in range(3):
-#    print(all_prediction[i])
-#    print(all_prediction[len(all_prediction) - i - 1])
