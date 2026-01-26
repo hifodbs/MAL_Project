@@ -25,7 +25,7 @@ class PredictionDao:
                     seen.add((
                         row["DATE_TIME"],
                         row["PLANT_ID"],
-                        row["PANEL_ID"],
+                        row["SOURCE_KEY"],
                     ))
 
         self._index[path] = seen
@@ -213,7 +213,7 @@ class PredictionDao:
                 writer.writerow([
                     "DATE_TIME",
                     "PLANT_ID",
-                    "PANEL_ID",
+                    "SOURCE_KEY",
                     "PREDICTED_AC_POWER",
                     "REAL_AC_POWER",
                     "DRIFT"
