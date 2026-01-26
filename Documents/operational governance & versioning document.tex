@@ -46,46 +46,154 @@
 \newpage
 \tableofcontents
 \newpage
-
 % =================================================
-% 2. Version Control Strategy
+% 1. Version Control Strategy
 % =================================================
 \section{Version Control Strategy}
-A GitFlow branching model is adopted.
-Code, datasets, and models are versioned using semantic versioning.
+
+This project uses Git for version control, with all source code, notebooks, data artifacts, 
+and model artifacts maintained in a single GitHub repository. The workflow is designed to use
+small branches for feature development, with direct merges into the \texttt{main} branch upon 
+completion.
+
+\subsection{Branching Model}
+A feature-based branching strategy is adopted. There is no long-lived \texttt{develop} branch.
+
+\begin{itemize}
+    \item \textbf{main}: contains the stable and integrated state of the project. Only validated and complete features are merged into this branch.
+    \item \textbf{feature/\textless name\textgreater}: each developer works on their own feature branch (e.g., dashboard, API, DAO, model training, drift detection).
+\end{itemize}
+
+When a feature is completed and tested, it is merged directly into the 
+\texttt{main} branch. This approach keeps the workflow simple and minimizes merge conflicts.
+
+\subsection{Code Versioning}
+Releases are identified using semantic versioning applied through Git tags. A version tag (e.g., \texttt{v1.0.0}) corresponds to a stable milestone, such as the delivery of the Minimum Viable Product (MVP) or the final system integration.
+
+\subsection{Data Versioning}
+Both raw and cleaned datasets are stored in the repository under dedicated directories. Data preprocessing is deterministic and documented through scripts and notebooks, ensuring reproducibility. Since cleaned data is used to feed a synthetic sensor, data evolution is tracked implicitly through Git commits rather than a dedicated data versioning system.
+
+\subsection{Model Versioning}
+Model artifacts, including trained models and preprocessing objects (e.g., scalers), are stored in the repository and versioned through Git. Each model version is associated with:
+\begin{itemize}
+    \item The Git commit under which it was produced
+    \item The training script or notebook used
+    \item Reported evaluation metrics recorded in documentation or commit messages
+\end{itemize}
+
+This lightweight approach provides traceability between code, data, and model artifacts without relying on an external model registry.
+
 
 % =================================================
-% 3. CI/CD \& Automation
+% 2. CI/CD \& Automation
 % =================================================
 \section{CI/CD \& Automation}
+
+This project adopts a lightweight CI-oriented workflow. While a fully automated 
+CI/CD pipeline is not implemented, several development and validation activities 
+are partially automated and systematically enforced through version control practices.
+
+\subsection{Continuous Integration}
+Continuous Integration is achieved through disciplined use of Git and feature-based 
+branching. Each feature is developed in an isolated branch and merged into the 
+\texttt{main} branch only after appropriate local validation.
+
+Depending on the scope of the change, the following activities are performed before merging:
 \begin{itemize}
-    \item Run tests
-    \item Validate data
-    \item Train and evaluate models
-    \item Deploy models if KPIs are satisfied
+    \item Execution of unit-level or functional tests when modifying core components such as API endpoints, the DAO interface, or dashboard logic
+    \item Manual validation of data consistency when changes affect preprocessing scripts or synthetic sensor generation
+    \item Verification that the Flask prediction service starts correctly and produces valid predictions when model-related code is updated
 \end{itemize}
 
+This process ensures that the \texttt{main} branch always represents a stable and 
+executable version of the system.
+
+\subsection{Automation of Model Training and Evaluation}
+Model training and evaluation are automated through dedicated scripts and notebooks. 
+These artifacts allow:
+\begin{itemize}
+    \item Reproducible training of regression models and incremental learners
+    \item Consistent evaluation using predefined metrics (e.g., Mean Squared Error)
+\end{itemize}
+
+Although model retraining is not triggered automatically by a CI pipeline, the system 
+supports controlled retraining through script execution when drift or performance 
+degradation is detected.
+
+\subsection{Deployment Process}
+Deployment is performed manually. Once a stable version is reached, 
+the Flask prediction service and Streamlit dashboard are launched in a controlled 
+environment. Model updates are deployed by replacing the model artifact used by 
+the prediction service, ensuring traceability through Git commits and version tags.
+
+This approach prioritizes clarity, reproducibility, and governance over full 
+automation.
 % =================================================
-% 4. Model Lifecycle Governance
+% 3. Model Lifecycle Governance
 % =================================================
 \section{Model Lifecycle Governance}
-Models are registered in a centralized registry with metadata including:
+
+The project adopts a lightweight model lifecycle governance strategy tailored 
+for incremental learning and small-scale deployments. Models are managed using 
+file-based versioning with metadata tracked in code and notebooks, 
+ensuring traceability and reproducibility.
+
+Each model version includes:
 \begin{itemize}
-    \item Hyperparameters
-    \item Training dataset version
-    \item Evaluation metrics
+    \item Model type and architecture (Hoeffding Tree Regressor or ILSTM)
+    \item Configuration parameters and hyperparameters
+    \item Features and data schema used for learning
+    \item Evaluation metrics (e.g., daily mean MSE)
+    \item Creation timestamp and version identifier
 \end{itemize}
 
-% =================================================
-% 5. Monitoring \& Maintenance Plan
-% =================================================
-\subsection{Monitoring and Maintenance}
+Incremental models can be trained offline before deployment. They continuously 
+learn from incoming streaming data provided by the DAO (synthetic sensor). 
+Model updates are controlled using ADWIN, which detects statistically significant 
+drift in prediction errors.
 
-\subsubsection{Monitoring}
-Feature drift and prediction performance are continuously monitored.
+Governance actions triggered by ADWIN include:
+\begin{itemize}
+    \item Increasing the learning weight of new samples to adapt quickly when drift is detected
+    \item Ignoring anomalous data points with very high prediction error to avoid degrading the model
+    \item Resetting or reinitializing the model if performance degrades persistently
+\end{itemize}
 
-\subsubsection{Incident Response}
-If degradation is detected, the system triggers retraining or rolls back to a previous stable model.
+All model changes are tracked through Git commits, with parameters and configurations 
+documented in code and notebooks, ensuring reproducibility and traceability of model evolution.
+
+
+% =================================================
+% 4. Monitoring & Maintenance Plan
+% =================================================
+\section{Monitoring and Maintenance}
+
+\subsection{Monitoring}
+The system continuously monitors input features and model performance to ensure 
+reliable predictions:
+\begin{itemize}
+    \item \textbf{Feature Drift:} ADWIN monitors the stream of prediction errors for statistically significant changes.
+    \item \textbf{Prediction Performance:} The custom KPI (daily mean MSE) is computed in real time at the end of the day,
+    still using standard KPI to ensure the custom KPI is working as expected.
+    \item \textbf{Alerts:} When ADWIN detects drift or the KPI exceeds predefined thresholds, alerts are triggered to notify operators.
+\end{itemize}
+
+\subsection{Incident Response}
+When alerts are triggered due to detected drift or performance degradation, 
+the following actions are performed:
+\begin{itemize}
+    \item Adjusting the influence of new samples by modifying their learning weight:
+    \begin{itemize}
+        \item High weight for drift events to allow rapid adaptation
+        \item Zero weight for outlier points to prevent corruption
+        \item Standard weight for normal observations
+    \end{itemize}
+    \item Resetting or reinitializing the incremental model if sustained degradation occurs
+    \item Switching to a previously stable version of the model if necessary
+\end{itemize}
+
+These procedures ensure the system maintains accurate, reliable predictions while 
+providing a clear audit trail of operational decisions.
 
 
 \end{document}
