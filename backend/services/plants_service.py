@@ -1,76 +1,19 @@
 # services/prediction_service.py
-
-from datetime import datetime, timedelta
-
-sample_plants = [
-    {
-        "id": "plant_1",
-        "name": "Solar Plant Alpha",
-    },
-    {
-        "id": "plant_2",
-        "name": "Solar Plant Beta",
-    },
-    {
-        "id": "plant_3",
-        "name": "Solar Plant Charlie",
-    },
-    {
-        "id": "plant_4",
-        "name": "Solar Plant Delta",
-    }
-]
+from backend.dao.plant_dao import PlantsDAO
+from backend.dao.measurements_dao import MeasurementsDAO
+from datetime import datetime
 
 
-sample_measurements = {
-    "plant_1": [
-        {"timestamp": "2025-12-21T10:00:00Z", "power": 534},
-        {"timestamp": "2025-12-21T11:00:00Z", "power": 512},
-        {"timestamp": "2025-12-21T12:00:00Z", "power": 564}
-    ],
-    "plant_2": [
-        {"timestamp": "2025-12-21T10:00:00Z", "power": 321},
-        {"timestamp": "2025-12-21T11:00:00Z", "power": 342},
-        {"timestamp": "2025-12-21T12:00:00Z", "power": 291}
-    ]
-}
+class PlantsService:
+    def __init__(self, data_directory="cleaned_data"):
+        self.plants_dao = PlantsDAO(data_directory=data_directory)
+        self.measurements_dao = MeasurementsDAO(data_directory=data_directory)
 
+    def get_plants(self):
+        return self.plants_dao.get_all()
 
-sample_predictions = {
-    "plant_1": [
-        {"timestamp": "2025-12-21T10:00:00Z", "power": 500},
-        {"timestamp": "2025-12-21T11:00:00Z", "power": 520},
-        {"timestamp": "2025-12-21T12:00:00Z", "power": 510},
-        {"timestamp": "2025-12-21T13:00:00Z", "power": 530},
-        {"timestamp": "2025-12-21T14:00:00Z", "power": 540},
-        {"timestamp": "2025-12-21T15:00:00Z", "power": 525}
-    ],
-    "plant_2": [
-        {"timestamp": "2025-12-21T10:00:00Z", "power": 300},
-        {"timestamp": "2025-12-21T11:00:00Z", "power": 320},
-        {"timestamp": "2025-12-21T12:00:00Z", "power": 310},
-        {"timestamp": "2025-12-21T13:00:00Z", "power": 290},
-        {"timestamp": "2025-12-21T14:00:00Z", "power": 270},
-        {"timestamp": "2025-12-21T15:00:00Z", "power": 265}
-    ]
-}
-
-def get_plants():
-    """
-    Fetch the list of plants.
-    """
-    return sample_plants
-
-def get_predictions(plant_id):
-    """
-    Fetch the list of predictions for a given plant_id.
-    Returns None if the plant_id does not exist.
-    """
-    return sample_predictions.get(plant_id)
-
-def get_measurements(plant_id):
-    """
-    Fetch the list of past measures for a given plant_id.
-    Returns None if the plant_id does not exist.
-    """
-    return sample_measurements.get(plant_id)
+    def get_global_measurements_by_plant_id(self, plant_id: str):
+        return self.measurements_dao.get_all_global_measurements_by_plant_id(plant_id=plant_id)
+    
+    def get_global_measurements_by_plant_id_and_time_range(self, plant_id: str, start_time: datetime = None, end_time: datetime = None):
+        return self.measurements_dao.get_global_measurements_by_plant_id_and_time_range(plant_id=plant_id, start_time=start_time, end_time=end_time)

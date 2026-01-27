@@ -1,1 +1,0 @@
-{"steps_past": 192, "features_past": 6, "steps_future": 96, "features_future": 5, "buffer_size": 5, "learner_weights": [0.22892574608758895, 0.17604836469186672, 0.2014435380376614, 0.19358235118288297, 0.2], "learner_count": 25}

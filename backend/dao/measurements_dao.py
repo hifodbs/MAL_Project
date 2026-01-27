@@ -1,36 +1,223 @@
 import csv
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import List
-from backend.models.measurement import Measurement
+from pathlib import Path
+from collections import defaultdict
+from backend.models.measurement import PanelMeasurement, GlobalMeasurement
 
 
 class MeasurementsDAO:
-    def __init__(self, plant_id: str, csv_file: str):
-        self.plant_id = plant_id
-        self.csv_file = csv_file
+    def __init__(self, data_directory: str):
+        self.data_directory = Path(data_directory)
 
-    def get_all(self) -> List[Measurement]:
+
+    def _parse_row(self, plant_id: str, row: dict, panel_id: str = None) -> PanelMeasurement:
+
+        try:
+            if panel_id is not None and row.get("SOURCE_KEY") != panel_id:
+                return None  
+
+            return PanelMeasurement(
+                timestamp=datetime.strptime(row["DATE_TIME"], "%Y-%m-%d %H:%M:%S"),
+                plant_id=plant_id,
+                panel_id=row["SOURCE_KEY"],
+                ac_power=float(row["AC_POWER"]),
+            )
+        except (KeyError, ValueError, TypeError):
+            return None
+
+
+    def get_panel_measurement_by_plant_id_and_panel_id_and_timestamp(
+        self, plant_id: str, panel_id: str, timestamp: datetime
+    ) -> List[PanelMeasurement]:
+
+        csv_file = self.data_directory / f"{plant_id}.csv"
+        if not csv_file.exists():
+            return
+        else:
+            with open(csv_file, newline="") as f:
+                reader = csv.DictReader(f)
+                for row in reader:
+                    measurement = self._parse_row(plant_id, row, panel_id)
+                    if measurement is not None and  measurement.timestamp == timestamp and measurement.panel_id == panel_id:
+                        return measurement
+
+        return
+
+
+    def get_all_panel_measurements_by_plant_id_and_panel_id(self, plant_id: str, panel_id: str) -> List[PanelMeasurement]:
+        
         measurements = []
-        with open(self.csv_file, newline="") as f:
+
+        csv_file = self.data_directory / f"{plant_id}.csv"
+        if not csv_file.exists():
+            return []
+
+        with open(csv_file, newline="") as f:
             reader = csv.DictReader(f)
             for row in reader:
-                m = Measurement(
-                    timestamp=datetime.strptime(row["DATE_TIME"], "%Y-%m-%d %H:%M:%S"),
-                    plant_id=self.plant_id,
-                    panel_id=row["SOURCE_KEY"],
-                    ac_power=float(row["AC_POWER"])
-                )
-                measurements.append(m)
+                m = self._parse_row(plant_id, row, panel_id=panel_id)
+                if m is not None:
+                    measurements.append(m)
+        return measurements
+    
+
+    def get_panel_measurements_by_panel_id_and_time_range(
+        self, plant_id: str, panel_id: str, start_time: datetime = None, end_time: datetime = None
+    ) -> List[PanelMeasurement]:
+        
+        measurements = []
+
+        csv_file = self.data_directory / f"{plant_id}.csv"
+        if not csv_file.exists():
+            return []
+
+
+        if end_time is None and start_time is None:
+            return self.get_all_panel_measurements_by_plant_id_and_panel_id(plant_id, panel_id)
+        
+        if end_time is None:
+            end_time = datetime.max
+        if start_time is None:
+            start_time = datetime.min
+
+        with open(csv_file, newline="") as f:
+            reader = csv.DictReader(f)
+            for row in reader:
+                m = self._parse_row(plant_id, row, panel_id)
+                if m is not None and start_time <= m.timestamp <= end_time:
+                    measurements.append(m)
+
+        return measurements
+
+
+    def get_all_panel_measurements_by_plant_id(self, plant_id: str) -> List[PanelMeasurement]:
+        
+        measurements = []
+
+        csv_file = self.data_directory / f"{plant_id}.csv"
+        if not csv_file.exists():
+            return []
+        
+        with open(csv_file, newline="") as f:
+            reader = csv.DictReader(f)
+            for row in reader:
+                m = self._parse_row(plant_id, row)
+                if m is not None:
+                    measurements.append(m)
+        return measurements
+
+
+    def get_panel_measurements_by_plant_id_and_time_range(
+        self, plant_id: str, start_time: datetime = None, end_time: datetime = None
+    ) -> List[PanelMeasurement]:
+        
+        measurements = []
+
+        csv_file = self.data_directory / f"{plant_id}.csv"
+        if not csv_file.exists():
+            return []
+        
+        if start_time is None and end_time is None:
+            return self.get_all_panel_measurements_by_plant_id(plant_id=plant_id)
+
+        if start_time is None:
+            start_time = datetime.min
+
+        if end_time is None:
+            end_time = datetime.max
+
+        with open(csv_file, newline="") as f:
+            reader = csv.DictReader(f)
+            for row in reader:
+                m = self._parse_row(plant_id, row)
+                if m is not None and start_time <= m.timestamp <= end_time:
+                    measurements.append(m)
+
+        return measurements
+    
+
+    def get_all_panel_measurements(self) -> List[PanelMeasurement]:
+        
+        measurements = []
+
+        for csv in self.data_directory.iterdir():
+            plant_id = csv.stem
+            plant_measurements = self.get_all_panel_measurements_by_plant_id(plant_id)
+            measurements.extend(plant_measurements)
+
         return measurements
 
 
 
-# this works only if you properly fix paths...
+    def get_all_global_measurements_by_plant_id(self, plant_id: str) -> List[GlobalMeasurement]:
+        
+        panel_measurements = self.get_all_panel_measurements_by_plant_id(plant_id)
 
-#dao = MeasurementsDAO(plant_id="solar_1", csv_file="cleaned_data/solar_1.csv")
-#measurements = dao.get_all()
+        agg: dict[datetime, float] = defaultdict(float)
+        for m in panel_measurements:
+            agg[m.timestamp] += m.ac_power
+    
+        global_measurements = [
+            GlobalMeasurement(timestamp=ts, plant_id=plant_id, ac_power=power)
+            for ts, power in sorted(agg.items())
+        ]
+    
+        return global_measurements
 
-#print("Measurements:")
+
+    def get_global_measurements_by_plant_id_and_time_range(
+        self, plant_id: str, start_time: datetime = None, end_time: datetime = None
+    ) -> List[GlobalMeasurement]:
+        
+        all_measurements = self.get_all_global_measurements_by_plant_id(plant_id)
+        
+        if end_time is None and start_time is None:
+            return all_measurements
+        measurements = []
+
+        if end_time is None:
+            end_time = datetime.max
+        
+        if start_time is None:
+            start_time = datetime.min
+
+        for m in all_measurements:
+            if m is not None and start_time <= m.timestamp <= end_time:
+                measurements.append(m)
+
+        return measurements
+    
+
+
+
+
+## this works if you use it as a module with python -m backend.dao.measurments_dao
+#
+#plant_id = "solar_1"
+#panel_id = "pkci93gMrogZuBj" #this is a panel in solar_1
+#
+#dao = MeasurementsDAO(data_directory="cleaned_data")
+#measurements = dao.get_all_global_measurements_by_plant_id(plant_id)
+#
+#print("\n\rGlobel measurements:")
 #for m in measurements[:5]: 
 #    print(m)
-
+#
+#end_dt_str = "2020-05-15 15:00:00"
+#dt = datetime.strptime(end_dt_str, "%Y-%m-%d %H:%M:%S")
+#print(dt)
+#
+#time_range_global_measurement = dao.get_global_measurements_by_plant_id_and_time_range(plant_id, end_time=dt)
+#time_range_panel_measurement = dao.get_panel_measurements_by_panel_id_and_time_range(plant_id, panel_id, end_time=dt) 
+#
+#print(f"\n\r{len(time_range_global_measurement)} measurements for datetime:")
+#for i in range(len(time_range_global_measurement)):
+#    print(f"Iteration {i}")
+#    print(time_range_global_measurement[i])
+#    print(time_range_panel_measurement[i])
+#
+#all_measurements = dao.get_all_panel_measurements()
+#for i in range(3):
+#    print(all_measurements[i])
+#    print(all_measurements[len(all_measurements) - i - 1])
