@@ -125,7 +125,8 @@ if not df_m.empty or not df_p.empty:
             index="timestamp",
             columns="type",
             values="ac_power",
-        )
+        ),
+        color=["#1f77b4", "#ff7f0e"]
     )
 else:
     st.info("No data to display")
@@ -269,7 +270,10 @@ if st.session_state.selected_panel_id:
         df_pm["type"] = "measured"
         df_pp["type"] = "predicted"
         combined_panel = pd.concat([df_pm, df_pp])
-        st.line_chart(combined_panel.pivot(index="timestamp", columns="type", values="ac_power"))
+        st.line_chart(
+            combined_panel.pivot(index="timestamp", columns="type", values="ac_power"),
+            color=["#1f77b4", "#ff7f0e"]
+        )
     
     if st.button("Clear panel selection"):
         st.session_state.selected_panel_id = None
