@@ -157,7 +157,7 @@ class PredictionDao:
 
         agg: dict[datetime, float] = defaultdict(float)
         for m in panel_prediction:
-            agg[m.timestamp] += m.ac_power
+            agg[m.timestamp] += m.predicted_ac_power
     
         global_prediction = [
             GlobalPrediction(timestamp=ts, plant_id=plant_id, ac_power=power)
