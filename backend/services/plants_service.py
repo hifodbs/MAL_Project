@@ -17,7 +17,3 @@ class PlantsService:
     
     def get_global_measurements_by_plant_id_and_time_range(self, plant_id: str, start_time: datetime = None, end_time: datetime = None):
         return self.measurements_dao.get_global_measurements_by_plant_id_and_time_range(plant_id=plant_id, start_time=start_time, end_time=end_time)
-    
-    def generate_report(self, plant_id: str, day: datetime):
-        report = []
-        return report
