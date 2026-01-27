@@ -167,7 +167,7 @@ class MeasurementsDAO:
 
 
     def get_global_measurements_by_plant_id_and_time_range(
-        self, plant_id: str, start_time: datetime, end_time: datetime
+        self, plant_id: str, start_time: datetime = None, end_time: datetime = None
     ) -> List[GlobalMeasurement]:
         
         all_measurements = self.get_all_global_measurements_by_plant_id(plant_id)
@@ -204,12 +204,12 @@ class MeasurementsDAO:
 #for m in measurements[:5]: 
 #    print(m)
 #
-#dt_str = "2020-05-15 15:00:00"
-#dt = datetime.strptime(dt_str, "%Y-%m-%d %H:%M:%S")
+#end_dt_str = "2020-05-15 15:00:00"
+#dt = datetime.strptime(end_dt_str, "%Y-%m-%d %H:%M:%S")
 #print(dt)
 #
-#time_range_global_measurement = dao.get_global_measurements_by_plant_id_and_time_range(plant_id, dt, 1)
-#time_range_panel_measurement = dao.get_panel_measurements_by_panel_id_and_time_range(plant_id, panel_id, dt, 1) 
+#time_range_global_measurement = dao.get_global_measurements_by_plant_id_and_time_range(plant_id, end_time=dt)
+#time_range_panel_measurement = dao.get_panel_measurements_by_panel_id_and_time_range(plant_id, panel_id, end_time=dt) 
 #
 #print(f"\n\r{len(time_range_global_measurement)} measurements for datetime:")
 #for i in range(len(time_range_global_measurement)):
