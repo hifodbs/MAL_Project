@@ -7,7 +7,7 @@
 \usepackage{lmodern}
 \usepackage{geometry}
 \usepackage{setspace}
-\usepackage{hyperref}
+\usepackage[hidelinks]{hyperref}
 \usepackage{graphicx}
 \usepackage{longtable}
 \usepackage{booktabs}
@@ -71,7 +71,7 @@
 \toprule
 Version & Date & Author & Description \\ \midrule
 0.1 & 2025-12-17 & Matteo & Initial draft \\
-1.0 & YYYY-MM-DD & Name & Approved release \\
+1.0 & 2026-01-24 & Matteo & Approved release \\
 \bottomrule
 \end{longtable}
 
@@ -80,39 +80,44 @@ Version & Date & Author & Description \\ \midrule
 \newpage
 
 % =================================================
-% 1. Introduction
+% 1. Problem Definition
 % =================================================
 \section{Problem Definition}
 
 \subsection{Business Problem}
 
-Solar power plants are subject to strong variability due to weather 
-conditions. 
-Inaccurate short-term forecasts of power generation may cause grid 
-imbalance penalties and inefficient energy dispatch.
-The objective of this project is to provide accurate and reliable 
-predictions of solar power output to support operational 
-decision-making.
+Solar power plants are affected by strong variability due to weather conditions.  
+Inaccurate short-term forecasts of power generation may cause grid imbalance penalties and inefficient energy dispatch.  
+The objective of this project is to provide accurate and reliable short-term predictions 
+of solar power output to support operational decision-making.
 
+\subsection{Machine Learning Problem Formulation}
 
-\subsection{ML Problem Formulation}
+Given historical and the forecast weather data (temperature, irradiance) plus the historical power data, 
+predict the energy produced by the plant for the next timestamp.  
+The dataset used provides measurements every 15 minutes.  
 
-Given historical weather data (temperature, irradiance, humidity,
-wind speed, cloud coverage),
-predict the continuous value of electrical power output (kW) for 
-a solar plant at a given time.
-
-This is formulated as a supervised regression problem.
+This is formulated as a supervised regression problem using an incremental Hoeffding Tree Regressor, 
+with an optional extension to a Long Short-Term Memory (LSTM) model for a day window forecast.
 
 \subsection{Key Performance Indicators (KPIs)}
 
+
+A custom KPI is used for model evaluation and monitoring. The KPI focuses on daily prediction accuracy, measuring 
+the ratio between the sum of Mean Absolute Errors (MAE) over the sum of actual power values for that day.
+The error is expressed as a percentage to facilitate interpretation and set thresholds for alerts.
+
+The KPI is defined as follows:
+
+\[ KPI = \frac{\sum_{i=1}^{N} |y_i - \hat{y}_i|}{\sum_{i=1}^{N} y_i} * 100 \]
+
+Where:
 \begin{itemize}
-    \item Root Mean Squared Error (RMSE)
-    \item Mean Absolute Error (MAE)
-    \item Coefficient of Determination ($R^2$)
-    \item Business KPI: reduction of forecasting error compared to a 
-    persistence baseline
-\end{itemize}
+  \item \( y_i \) = Actual power output at timestamp \( i \)  
+  \item \( \hat{y}_i \) = Predicted power output at timestamp \( i \)  
+  \item \( N \) = Total number of timestamps in the day
+\end{itemize} 
+
 
 % =================================================
 % 2. Data Specification
@@ -121,28 +126,64 @@ This is formulated as a supervised regression problem.
 
 \subsection{Data Source}
 
-\begin{itemize}
-    \item Weather variables: temperature, solar irradiance, 
-    humidity, wind speed
-    \item Target variable: generated power (kW)
-    \item Timestamp information
-\end{itemize}
+The dataset is sourced from Kaggle and represents two solar power plants.  
+Each plant is described by two CSV files: one for power generation and one for weather conditions.  
+This setup simulates real-time sensor data using synthetic sensors.
 
+\subsubsection{Plant Generation Data}
+
+\begin{longtable}{@{}p{4cm} p{11cm}@{}}
+\toprule
+Name & Description \\ \midrule
+DATE\_TIME & Date and time for each observation. \\
+PLANT\_ID & Identifier of the power plant. \\
+SOURCE\_KEY & Identifier of the inverter. \\
+DC\_POWER & DC power generated at the last timestamp. \\
+AC\_POWER & AC power generated at the last timestamp. \\
+DAILY\_YIELD & Cumulative power generated for the day up to that timestamp. \\
+TOTAL\_YIELD & Total cumulative power generated up to that timestamp. \\
+\bottomrule
+\end{longtable}
+
+\subsubsection{Weather Sensor Data}
+
+\begin{longtable}{@{}p{5cm} p{10cm}@{}}
+\toprule
+Name & Description \\ \midrule
+DATE\_TIME & Date and time for each observation. \\
+PLANT\_ID & Identifier of the power plant. \\
+AMBIENT\_TEMPERATURE & Ambient temperature at the plant. \\
+MODULE\_TEMPERATURE & Temperature of the solar panel module. \\
+IRRADIATION & Solar irradiation during the timestamp interval. \\
+\bottomrule
+\end{longtable}
 
 \subsubsection{Data Flow}
+
 \begin{enumerate}
-    \item Raw data ingestion from CSV files
-    \item Schema validation and missing value checks
-    \item Feature engineering and normalization
-    \item Dataset splitting into training, validation, and test sets
+    \item Raw data ingestion from CSV files.
+    \item Adjust missing values.
+    \item Standardize units.
+    \item Assign data to the corresponding synthetic sensor/panel.
+    \item Collect the data from the server.
+    \item Use new data points to make predictions.
+    \item Update the model incrementally with incoming data.
 \end{enumerate}
 
 \subsubsection{Data Quality and Preprocessing}
-Missing values are handled through interpolation or forward-filling.
-Outliers caused by sensor malfunctions are detected using statistical 
-thresholds.
-Numerical features are standardized to improve model convergence.
-Temporal features such as hour of day and day of year are extracted.
+
+Missing Values:
+
+\begin{itemize}
+  \item Missing weather data are linearly interpolated.  
+  \item Missing AC/DC power values:  
+    \begin{itemize}
+      \item At night (no irradiation), zeros are inserted.  
+      \item During the day, linear interpolation (with median used for lack of data).  
+    \end{itemize}  
+\end{itemize}
+
+Outliers: (e.g., zero AC power during daytime) are corrected using linear interpolation.
 
 
 % =================================================
@@ -151,25 +192,29 @@ Temporal features such as hour of day and day of year are extracted.
 \section{Functional Requirements}
 
 \subsection{Use Cases}
-See in real time the power produced by the power plant.
-See how much power will be predicted in the same day
-and next day
+The system shall provide the following use cases:
+\begin{itemize}
+  \item Visualize the real-time power output of the plant.  
+  \item Predict the power for the next timestamp.  
+  \item Generate an end-of-day report comparing predicted and actual power.
+  \item Train the ILSTM for day-ahead forecasting (optional).
+\end{itemize}
+
 
 \subsection{Functional Requirement List}
+
 \begin{longtable}{@{}p{2cm} p{11cm}@{}}
 \toprule
 ID & Description \\ \midrule
-FR-01 & The system shall ingest historical data.\\
-FR-02 & The model shall forecast timestamp predictions for the next 24 hours.\\
-FR-03 & The system shall forecast total energy yield for the next 24 hours.\\
-FR-04 & The system shall detect anomalies in the power production.\\
-FR-05 & The system shall identify underperforming inverters.\\
-FR-06 & The system shall display the list of underperforming inverters and their efficiency loss.\\
-FR-07 & The systems shall display the plot for the total predicted power generation against the actual one.\\
-FR-08 & The systems shall display the plot for the predicted power generation for each timestamp against the actual one.\\
-
+FR-01 & The system shall ingest historical data. \\
+FR-02 & The model shall forecast the next timestamp. \\
+FR-03 & The model shall detect and display drift for each panel  \\
+FR-04 & The system shall display predicted vs actual power generation per timestamp. \\
+FR-05 & The dashboard shall produce an end-of-day report for each plant. \\
 \bottomrule
 \end{longtable}
+
+---
 
 % =================================================
 % 4. Non-Functional Requirements
@@ -179,50 +224,112 @@ FR-08 & The systems shall display the plot for the predicted power generation fo
 \begin{longtable}{@{}p{2cm} p{11cm}@{}}
 \toprule
 ID & Description \\ \midrule
-NFR-01 & The forecasting model shall achieve a Mean Absolute Error 
-(MAE) of less than a threshold on the validation set.\\
-NFR-02 & The anomaly detection algorithm shall have a low False 
-Positive Rate (FPR) to prevent unnecessary maintenance dispatch.\\
+NFR-01 & Predictions shall be generated within the 15-minute acquisition interval for near real-time decision-making. \\
+NFR-02 & The forecasting model shall achieve the custom KPI below a predefined threshold. \\
+NFR-03 & The system shall handle data from multiple synthetic sensors without performance degradation. \\
+NFR-04 & Incremental learning shall not interrupt prediction service availability. \\
+NFR-05 & The monitoring component shall detect data drift and performance degradation promptly. \\
+NFR-06 & Prediction results and measurements shall be logged for auditing and post-analysis. \\
+NFR-07 & The dashboard shall maintain at least 99\% uptime during operational hours. \\
 \bottomrule
 \end{longtable}
 
+---
 
 % =================================================
 % 5. System Architecture
 % =================================================
+\section{System Architecture}
 
-\subsection{System Architecture}
+The system consists of two components:  
+1. Dashboard (Streamlit) for end users to visualize predictions.  
+2. Server-side service (Flask) for predictions and sensor data access via a DAO (Data Access Object).
+The DAO provides synthetic sensor readings to simulate a real-world scenario. 
 
-\subsubsection{Training}
-Offline model training is performed using scikit-learn pipelines.
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.7\textwidth]{img/DDSE.drawio.png}
+    \caption{High-Level System Architecture for Solar Power Forecasting}
+\end{figure}
 
-\subsubsection{Validation}
-Cross-validation is applied to reduce overfitting and assess 
-generalization.
+\subsection{Training}
+\begin{itemize}
+    \item If no train model exist, use historical data to initialize the Hoeffding Tree Regressor to avoid cold start.
+    \item Each new sensor reading immediately updates the Hoeffding Tree Regressor.
+    \item No offline batch retraining is required; the pipeline supports fully online learning.
+\end{itemize}
 
-\subsubsection{Deployment}
-The trained model is containerized using Docker and deployed via a 
-FastAPI service.
+\subsection{Validation}
+\begin{itemize}
+    \item Online rolling evaluation monitors the custom KPI (daily mean MSE).
+    \item ADWIN monitors data streams for drift in real time.
+    \item Alerts are triggered if drift is detected, allowing operators to adjust updates.
+\end{itemize}
 
-\subsubsection{Monitoring}
-The system monitors prediction errors and detects feature drift using 
-statistical tests.
+\subsection{Deployment}
+\begin{itemize}
+    \item The incremental model is exposed via a Flask API.
+    \item The Streamlit dashboard requests predictions from the Flask service.
+    \item The DAO fetches the latest sensor readings for the model.
+    \item Predictions are returned to the dashboard for near real-time visualization.
+\end{itemize}
+
+\subsection{Monitoring}
+\begin{itemize}
+    \item ADWIN monitors feature distributions and prediction errors.
+    \item Metrics and predictions are logged for auditing.
+    \item Alerts are triggered on significant drift detection.
+\end{itemize}
+
+\noindent
+\textbf{Process Flow:}
+\begin{enumerate}
+    \item User requests a prediction via the dashboard.  
+    \item Flask queries the DAO for latest sensor readings.  
+    \item Sensor data is input to the incremental model.  
+    \item Prediction is returned to the dashboard.  
+    \item The model updates incrementally with each new data point.  
+    \item ADWIN monitors for drift and triggers alerts if necessary.
+\end{enumerate}
+
 
 % =================================================
 % 6. Risk Analysis
 % =================================================
 \section{Risk Analysis}
 
-\begin{center}
-\begin{tabular}{lll}
+Since preprocessing is defined and validated at initialization, runtime data transformation risks are minimized. Remaining risks concern data distribution changes, model behavior, and system operation.
+
+\begin{longtable}{@{}p{3cm} p{9cm} p{2cm}@{}}
 \toprule
-Risk & Impact & Mitigation \\
-\midrule
-Data drift & Model degradation & Periodic retraining \\
-Missing data & Incorrect predictions & Validation checks \\
-Overfitting & Poor generalization & Cross-validation \\
+\textbf{Risk} & \textbf{Description and Mitigation Strategy} & \textbf{Impact} \\ \midrule
+
+Data Drift &
+\textbf{Description:} Statistical properties of sensor data may change over time due to seasonal or environmental variations.\newline
+\textbf{Mitigation Strategy:} ADWIN monitors the data stream in real time and triggers alerts when drift is detected. &
+High \\
+
+Concept Drift &
+\textbf{Description:} The relationship between weather features and power output may evolve, reducing prediction accuracy.\newline
+\textbf{Mitigation Strategy:} Incremental Hoeffding Tree continuously adapts to changes in the input-output relationship. &
+High \\
+
+Prediction \newline Degradation &
+\textbf{Description:} Model performance may decline gradually despite incremental updates.\newline
+\textbf{Mitigation Strategy:} Continuous KPI monitoring (daily mean MSE) with alert thresholds. &
+Medium \\
+
+System Availability &
+\textbf{Description:} Service interruptions may prevent users from obtaining predictions.\newline
+\textbf{Mitigation Strategy:} Lightweight, modular Flask service reduces failure points. &
+Medium \\
+
+Monitoring \newline Limitations &
+\textbf{Description:} Poorly configured thresholds may fail to detect drift or degradation.\newline
+\textbf{Mitigation Strategy:} Combined use of ADWIN and KPI monitoring ensures reliable detection. &
+Medium \\
+
 \bottomrule
-\end{tabular}
-\end{center}
+\end{longtable}
 
 \end{document}

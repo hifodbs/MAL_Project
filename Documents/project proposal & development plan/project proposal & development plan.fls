@@ -178,6 +178,7 @@ INPUT /usr/share/texmf/fonts/tfm/public/lm/ec-lmbx12.tfm
 INPUT project proposal & development plan/project proposal & development plan.toc
 INPUT project proposal & development plan/project proposal & development plan.toc
 INPUT project proposal & development plan/project proposal & development plan.toc
+INPUT /usr/share/texmf/fonts/tfm/public/lm/ec-lmbx10.tfm
 INPUT /usr/share/texmf/fonts/tfm/public/lm/rm-lmr10.tfm
 INPUT /usr/share/texmf/fonts/tfm/public/lm/rm-lmr7.tfm
 INPUT /usr/share/texmf/fonts/tfm/public/lm/rm-lmr5.tfm
@@ -187,7 +188,6 @@ INPUT /usr/share/texmf/fonts/tfm/public/lm/lmmi5.tfm
 INPUT /usr/share/texmf/fonts/tfm/public/lm/lmsy10.tfm
 INPUT /usr/share/texmf/fonts/tfm/public/lm/lmsy7.tfm
 INPUT /usr/share/texmf/fonts/tfm/public/lm/lmsy5.tfm
-INPUT /usr/share/texmf/fonts/tfm/public/lm/ec-lmbx10.tfm
 OUTPUT project proposal & development plan/project proposal & development plan.toc
 INPUT /usr/share/texmf/fonts/tfm/public/lm/ec-lmbx12.tfm
 INPUT /usr/share/texmf/tex/latex/lm/ts1lmr.fd

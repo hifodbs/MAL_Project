@@ -48,119 +48,214 @@
 \newpage
 
 % =================================================
-% 2. Project Summary
+% 1. Project Summary
 % =================================================
 
-\subsection{Project Summary}
+\section{Project Summary}
 
-\subsubsection{Scope}
-Development of an end-to-end machine learning system for forecasting solar power generation.
+\subsection{Scope}
 
-\subsubsection{Objectives}
+The scope of this project is the design and development of an end-to-end data-driven 
+system for short-term solar power generation forecasting. The system covers the full 
+lifecycle of a machine learning application, including data ingestion, preprocessing, 
+model training, validation, deployment, monitoring, and incremental updates. The 
+solution is designed to simulate real-world operational conditions through synthetic sensors.
+The project further incorporates a ILSTM model as a proof of concept for advanced 
+forecasting techniques.
+
+\subsection{Objectives}
+
+The objectives of the project are the following:
 \begin{itemize}
-    \item Build a reliable regression model
-    \item Implement CI/CD pipelines
-    \item Enable monitoring and governance
+    \item Design and implement a reliable regression-based system for short-term solar power forecasting.
+    \item Develop an incremental learning pipeline capable of adapting to evolving data distributions.
+    \item Implement monitoring mechanisms for data drift and performance degradation.
+    \item Integrate governance features such as metric logging, model evaluation, and reproducibility support.
+    \item Provide a proof of concept for extending the system with an Incremental Long Short-Term Memory (ILSTM) model.
 \end{itemize}
 
-\subsubsection{Relevance}
-The project supports renewable energy optimization and sustainable power management.
+\subsection{Relevance}
 
+This project is relevant in the context of renewable energy management, 
+where accurate short-term forecasting plays a critical role in ensuring grid 
+stability, optimizing energy dispatch, and reducing imbalance penalties. 
+Reliable predictions of solar power generation enable energy operators to 
+better align supply with demand and to improve the overall efficiency of power 
+system operations.
+
+The project demonstrates the practical application of neural network 
+techniques for time-series forecasting, focusing on the prediction of 
+next-day solar power generation using historical production data and 
+weather-related features. By addressing real-world challenges such as 
+data variability and evolving system behavior, the project highlights the 
+value of machine learning solutions in supporting sustainable and data-driven 
+energy management.
 
 % =================================================
-% 3. Deliverables
+% 2. Deliverables
 % =================================================
+
 \section{Deliverables}
 
 \begin{itemize}
-    \item Data ingestion and preprocessing pipeline
-    \item Trained ML model
-    \item REST API for inference
-    \item CI/CD automation
-    \item Monitoring dashboard
+    \item A data ingestion and preprocessing pipeline supporting historical data.
+    \item An incremental learning regression model for next-timestamp solar power forecasting.
+    \item A server-side prediction service implemented in Flask, exposing a REST-style API.
+    \item An interactive Streamlit dashboard for visualization of predictions and monitoring metrics.
+    \item A proof-of-concept implementation and evaluation of an incremental LSTM (ILSTM) model.
+    \item A DAO interface for querying sensor data, including support for synthetic sensor sources.
+    \item Technical documentation describing system architecture, model design, and monitoring strategy.
 \end{itemize}
 
 % =================================================
-% 4. Milestones
+% 3. Milestones
 % =================================================
 \subsection{Milestones}
 
+
 \begin{enumerate}
-    \item Dataset analysis completed
-    \item Baseline and advanced models trained
-    \item Deployment pipeline implemented
-    \item Monitoring activated
+    \item Completion of dataset analysis and validation of data quality.
+    \item Development and evaluation of a baseline incremental regression model.
+    \item Implementation of the DAO layer and integration of synthetic sensor data sources.
+    \item Deployment of the Flask-based prediction service exposing a REST-style API.
+    \item Development of the Streamlit dashboard for real-time visualization and monitoring.
+    \item Implementation and evaluation of an advanced incremental LSTM (ILSTM) model.
+    \item Activation of monitoring components for data drift and prediction performance.
 \end{enumerate}
 
+
+
+
 % =================================================
-% 5. Work Breakdown Structure (WBS)
+% 4. Work Breakdown Structure (WBS)
 % =================================================
 \subsection{Work Breakdown Structure}
 
+The project started by a brainstorming session to identify the main components 
+and tasks required to achieve the project objectives. The WBS was then structured 
+into the following main components:
+
 \subsubsection{Project Manager}
 \begin{itemize}
-    \item Planning and coordination
-    \item Risk management
-    \item Documentation oversight
+    \item Coordination of development activities and task scheduling.
+    \item Redacting and maintaining project documentation.
+    \item Review and validation of technical documentation and deliverables.
 \end{itemize}
 
-\subsubsection{Data Analyst}
+\subsubsection{Data Analyst / ML Engineer}
 \begin{itemize}
-    \item Exploratory data analysis
-    \item Feature engineering
-    \item Baseline model evaluation
+    \item Exploratory data analysis and validation of the datasets.
+    \item Development and evaluation of the baseline incremental regression model.
+    \item Design, implementation, and evaluation of the incremental LSTM (ILSTM) model.
+    \item Definition and monitoring of performance metrics and KPIs.
 \end{itemize}
 
-\subsubsection{Developer}
+\subsubsection{Software Developer}
 \begin{itemize}
-    \item Model implementation
-    \item API development
-    \item CI/CD configuration
+    \item Implementation of the DAO layer for accessing synthetic sensor data.
+    \item Development of the Flask-based prediction service and REST-style API.
+    \item Development of the Streamlit dashboard for visualization and monitoring.
+    \item Integration of monitoring components for drift detection and performance tracking.
 \end{itemize}
 
 % =================================================
-% 6. Schedule
+% 5. Schedule
 % =================================================
 \subsection{Sprint Plan}
 
+Due to the vacation period, the length of the sprints has been adjusted to accommodate
+the team members' availability. The sprint plan is as follows:
+
 \begin{center}
-\begin{tabular}{ll}
+\begin{tabular}{p{1.5cm} p{2cm} p{11cm}}    
 \toprule
-Sprint & Activities \\
+Sprint & Start Date & Activities \\
 \midrule
-Sprint 1 & Requirements and data analysis \\
-Sprint 2 & Model development \\
-Sprint 3 & Deployment and CI/CD \\
-Sprint 4 & Monitoring and documentation \\
+Sprint 0 & -- &
+Brainstorming and definition of project requirements, along with analysis of the historical dataset. \\
+
+Sprint 1 & 19-12-2025 &
+Implementation of the core system backbone, including the Streamlit dashboard, Flask service, and DAO layer; preprocessing of historical data and training of the first incremental regression model. \\
+
+Sprint 2 & 23-12-2025 &
+API refinement, integration of the synthetic sensor simulation, and delivery of the first end-to-end basic model. \\
+
+Sprint 3 & 16-01-2026 &
+Development of the Minimum Viable Product (MVP), integration of ADWIN-based drift detection, and implementation of the incremental LSTM (ILSTM) model. \\
+
+Sprint 4 & 23-01-2026 &
+Final model tuning, full system deployment, and completion of monitoring and documentation. \\
 \bottomrule
 \end{tabular}
 \end{center}
 
 % =================================================
-% 7. Definition of Done (DoD) \& Definition of Ready (DoR)
+% 6. Definition of Done (DoD) \& Definition of Ready (DoR)
 % =================================================
 \subsection{Definition of Ready (DoR)}
+
+A task or feature is considered ready to start when all the following conditions are met:
+
 \begin{itemize}
-    \item Dataset available
-    \item Requirements approved
+    \item The task is clearly defined, with measurable objectives and scope.
+    \item Required datasets are available, cleaned, and preprocessed for use with synthetic sensors.
+    \item Technical specifications, including API endpoints, dashboard requirements, and model input/output, are documented.
+    \item Dependencies, such as necessary libraries (Flask, Streamlit, scikit-multiflow), frameworks, or environment setup, are identified and accessible.
+    \item Acceptance criteria are clearly defined, including performance targets for the incremental regression model and drift detection.
 \end{itemize}
 
 \subsection{Definition of Done (DoD)}
+
+A task or feature is considered done when all the following conditions are satisfied:
+
 \begin{itemize}
-    \item KPIs achieved
-    \item Reproducible pipeline
-    \item Complete documentation
+    \item The model is implemented, integrated into the Flask API, and correctly returns predictions to the dashboard.
+    \item The synthetic sensor interface is functional, providing real-time simulated data for predictions.
+    \item Incremental learning updates the model continuously, and ADWIN drift detection monitors feature distributions and triggers alerts appropriately.
+    \item Model performance meets the predefined KPIs, such as daily mean MSE below the target threshold.
+    \item The codebase is fully documented, versioned, and reviewed according to project standards.
+    \item Basic functional tests of the entire pipeline (API, dashboard, monitoring, and sensor interface) have passed successfully.
+    \item All related documentation, including design decisions and system architecture, is completed and available.
 \end{itemize}
 
 % =================================================
-% 8. Resources \& Infrastructure
+% 7. Resources \& Infrastructure
 % =================================================
 \subsection{Resources and Infrastructure}
+
 \begin{itemize}
-    \item GitHub for version control
-    \item Docker for containerization
-    \item Python, scikit-learn, FastAPI
-    \item Cloud or local VM infrastructure
+    \item \textbf{Programming Languages and Libraries:}
+    \begin{itemize}
+        \item Python: Core language for data processing, modeling, and backend development.
+        \item Libraries: pandas, numpy, scikit-learn, river (for real-time machine learning), Flask (for REST API), and Streamlit (for dashboard visualization).
+    \end{itemize}
+
+    \item \textbf{Data Management:}
+    \begin{itemize}
+        \item Raw datasets from solar power plants, including sensor data for temperature, irradiation, and power generation.
+        \item CSV files for data ingestion and preprocessing.
+    \end{itemize}
+
+    \item \textbf{Version Control:}
+    \begin{itemize}
+        \item GitHub: Used for version control, collaboration, and documentation.
+    \end{itemize}
+
+    \item \textbf{Development Tools:}
+    \begin{itemize}
+        \item Jupyter Notebooks: For exploratory data analysis and prototyping.
+        \item VS Code: Integrated development environment for coding and debugging.
+    \end{itemize}
+
+    \item \textbf{Infrastructure:}
+    \begin{itemize}
+        \item Local development environment for testing and debugging.
+    \end{itemize}
+
+    \item \textbf{Collaboration Tools:}
+    \begin{itemize}
+        \item Documentation: LaTeX for project documentation and reporting.
+    \end{itemize}
 \end{itemize}
 
 \end{document}
