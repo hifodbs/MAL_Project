@@ -188,3 +188,25 @@ def get_drift_summary_by_plant_id(plant_id, start_time=None, end_time=None):
     except Exception as e:
         print(f"Error fetching drift summary: {e}")
         return {}
+    
+
+@st.cache_data(ttl=600)
+def get_LSTM_measurements_by_plant_id_and_panel_id(plant_id, panel_id):
+    try:
+        response = requests.get(f"{BASE_URL}/plants/{plant_id}/panels/{panel_id}/lstm_measurements")
+        response.raise_for_status()
+        return response.json()
+    except Exception as e:
+        print(f"Error fetching drift summary: {e}")
+        return {}
+
+
+@st.cache_data(ttl=600)
+def get_LSTM_predictions_by_plant_id_and_panel_id(plant_id, panel_id):
+    try:
+        response = requests.get(f"{BASE_URL}/plants/{plant_id}/panels/{panel_id}/lstm_predictions")
+        response.raise_for_status()
+        return response.json()
+    except Exception as e:
+        print(f"Error fetching drift summary: {e}")
+        return {}
