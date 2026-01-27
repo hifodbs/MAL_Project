@@ -103,7 +103,7 @@ X_p_stream, X_f_stream, y_stream, t_stream = X_work_p[~init_mask], X_work_f[~ini
 
 
 
-model = IncLSTMDual(LOOKBACK, 6, HORIZON, 3, buffer_size=5)
+model = IncLSTMDual(LOOKBACK, 6, HORIZON, 5, buffer_size=5)
 
 print(f"Cold Start Training ({len(y_init)} samples)...")
 model.fit_incremental(X_p_init, X_f_init, y_init, epochs=20)
@@ -164,8 +164,8 @@ plt.grid(True, alpha=0.3)
 plt.show()
 
 
-print("\nSaving Final Model Ensemble...")
+'''print("\nSaving Final Model Ensemble...")
 model_save_path = "final_solar_model"
-model.save_system(model_save_path)
+model.save_system(model_save_path)'''
 
 print(f"DONE")
