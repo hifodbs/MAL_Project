@@ -52,27 +52,27 @@ def plant_predictions(plant_id):
     #Each prediction: {"timestamp": ISO8601 string, "plant_id": string, "ac_power": float}
     
     start_time_str = request.args.get("start_time", default=None)
-    end_time_str = request.args.get("end_time", default="2020-06-14T10:45:00")
+    end_time_str = request.args.get("end_time", default=None)
 
-    if start_time_str:
+    if start_time_str is not None:
         try:
-            start_time = datetime.fromisoformat(start_time)
+            start_time = datetime.fromisoformat(start_time_str)
         except ValueError:
             return jsonify({"error": "Invalid time format. Use ISO 8601."}), 400
     else:
         start_time = None
-
-    if end_time_str:
+    
+    if end_time_str is not None:
         try:
             end_time = datetime.fromisoformat(end_time_str)
         except ValueError:
             return jsonify({"error": "Invalid time format. Use ISO 8601."}), 400
     else:
-        end_time = None 
+        end_time = None
 
     try:
         prediction_service = get_prediction_service()
-        predictions = prediction_service.predict_plant(
+        predictions = prediction_service.get_past_global_plant_predictions(
             plant_id=plant_id,
             start_time=start_time,
             end_time=end_time
@@ -92,24 +92,26 @@ def plant_measurements(plant_id):
     start_time_str = request.args.get("start_time", default=None)
     end_time_str = request.args.get("end_time", default="2020-06-14T10:45:00")
 
-    if start_time_str:
+    if start_time_str is not None:
         try:
-            start_time = datetime.fromisoformat(start_time)
+            start_time = datetime.fromisoformat(start_time_str)
         except ValueError:
             return jsonify({"error": "Invalid time format. Use ISO 8601."}), 400
     else:
         start_time = None
 
-    if end_time_str:
+    if end_time_str is not None:
         try:
             end_time = datetime.fromisoformat(end_time_str)
         except ValueError:
             return jsonify({"error": "Invalid time format. Use ISO 8601."}), 400
     else:
-        end_time = None 
+        end_time = None
 
     try:
-        measurements = plants_service.get_global_measurements_by_plant_id_and_time_range(plant_id, end_time, start_time)
+
+        measurements = plants_service.get_global_measurements_by_plant_id_and_time_range(plant_id=plant_id, start_time=start_time, end_time=end_time)
+
         if not measurements:
             return jsonify({"error": f"No measurements found for plant {plant_id}"}), 404
         return jsonify([{ "timestamp": m.timestamp.isoformat(), "plant_id": m.plant_id, "ac_power": m.ac_power} for m in measurements]), 200
@@ -122,33 +124,76 @@ def plant_measurements(plant_id):
 # GET /plants/<plant_id>/report
 
 @plants_bp.route("/plants/<plant_id>/report", methods=["GET"])
-def plant_report(plant_id, day):
+def plant_report(plant_id):
     
-    day = request.args.get("day",default="2020-06-14T10:45:00")
+    day_str = request.args.get("day",default=None)
 
     try:
-        day = request.args.get("day",default="2020-06-14T10:45:00")
+        day = datetime.fromisoformat(day_str)
     except ValueError:
         return jsonify({"error": "Invalid time format. Use ISO 8601."}), 400
 
     try:
-        report = plants_service.generate_report(plant_id, day)
-        return jsonify(report), 200
+        prediction_service = get_prediction_service()
+        total_kpi, panels_kpis, total_drifts, panels_drifts = prediction_service.generate_report(plant_id, day)
+        return jsonify({
+            "total_kpi": total_kpi,
+            "panels_kpis": panels_kpis,
+            "total_drifts": total_drifts,
+            "panels_drifts": panels_drifts
+        }), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500    
+
+
+
+# GET /plants/<plant_id>/new_prediction
+
+@plants_bp.route("/plants/<plant_id>/new_prediction", methods=["GET"])
+def new_plant_prediction(plant_id):
+
+    time_str = request.args.get("time",default="2020-06-14T10:45:00")
+
+    try:
+        time = datetime.fromisoformat(time_str)
+        prediction_service = get_prediction_service()
+        new_global_prediction, new_panels_predictions = prediction_service.train_all_panels_for_given_timestamp(plant_id, time)
+        print(f"\r\n/plants/<plant_id>/new_prediction global prediction:{new_global_prediction} \r\npanels predictions len{len(new_panels_predictions)}|r\n")
+        return jsonify({
+            "timestamp": new_global_prediction.timestamp.isoformat(),
+            "plant_id": new_global_prediction.plant_id,
+            "ac_power": new_global_prediction.ac_power
+        }), 200
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500    
+    
+
+# GET /plants/<plant_id>/drift_summary
+
+@plants_bp.route("/plants/<plant_id>/drift_summary", methods=["GET"])
+def get_drift_summary_by_plant_id(plant_id):
+
+    start_time_str = request.args.get("start_time", default=None)
+    end_time_str = request.args.get("end_time", default="2020-06-14T10:45:00")
+
+    if start_time_str is not None:
+        try:
+            start_time = datetime.fromisoformat(start_time_str)
+        except ValueError:
+            return jsonify({"error": "Invalid time format. Use ISO 8601."}), 400
+    else:
+        start_time = None
+
+    if end_time_str is not None:
+        try:
+            end_time = datetime.fromisoformat(end_time_str)
+        except ValueError:
+            return jsonify({"error": "Invalid time format. Use ISO 8601."}), 400
+    else:
+        end_time = None
+    try: 
+        prediction_service = get_prediction_service()
+        drifts = prediction_service.get_drifts_by_plant_id_and_time_range(plant_id, start_time, end_time)
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-
-
-##testing
-#
-#measurements = plants_service.get_global_measurements_by_plant_id_and_time_range(
-#    "solar_1",
-#    datetime.fromisoformat("2020-05-31T00:00:00"),
-#    24,
-#)
-#
-#for m in measurements[:5]:
-#    print(m)
-#count = 0 
-#for m in measurements:
-#    count += 1
-#print(count)
