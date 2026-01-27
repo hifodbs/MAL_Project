@@ -7,7 +7,7 @@
 \usepackage{lmodern}
 \usepackage{geometry}
 \usepackage{setspace}
-\usepackage{hyperref}
+\usepackage[hidelinks]{hyperref}
 \usepackage{graphicx}
 \usepackage{longtable}
 \usepackage{booktabs}
@@ -31,10 +31,10 @@
 \fancyhead[R]{\thepage}
 
 % -------------------------------------------------
-% Document Metadata
+% Metadata
 % -------------------------------------------------
-\title{\textbf{Operational Governance \& Versioning Document}}
-\author{Team / Organization Name}
+\title{\textbf{System Specification Document}}
+\author{S.O.L.A.R. Project}
 \date{\today}
 
 % -------------------------------------------------
@@ -43,6 +43,21 @@
 \begin{document}
 
 \maketitle
+\thispagestyle{empty}
+\newpage
+
+% -------------------------------------------------
+% Revision History
+% -------------------------------------------------
+\section*{Revision History}
+\begin{longtable}{@{}lll p{7cm}@{}}
+\toprule
+Version & Date & Author & Description \\ \midrule
+0.1 & 2025-12-17 & Matteo & Initial draft \\
+1.0 & 2026-01-26 & Matteo & Approved release \\
+\bottomrule
+\end{longtable}
+
 \newpage
 \tableofcontents
 \newpage
@@ -57,32 +72,48 @@ small branches for feature development, with direct merges into the \texttt{main
 completion.
 
 \subsection{Branching Model}
-A feature-based branching strategy is adopted. There is no long-lived \texttt{develop} branch.
+A feature-based branching strategy is adopted.
 
 \begin{itemize}
-    \item \textbf{main}: contains the stable and integrated state of the project. Only validated and complete features are merged into this branch.
-    \item \textbf{feature/\textless name\textgreater}: each developer works on their own feature branch (e.g., dashboard, API, DAO, model training, drift detection).
+    \item \textbf{main}: contains the stable and integrated state of the project. Only 
+    validated and complete features are merged into this branch.
+    \item \textbf{\textless feature name\textgreater}: each developer works on their own 
+    feature branch (e.g., dashboard, API, DAO, model training, drift detection).
 \end{itemize}
 
 When a feature is completed and tested, it is merged directly into the 
 \texttt{main} branch. This approach keeps the workflow simple and minimizes merge conflicts.
 
 \subsection{Code Versioning}
-Releases are identified using semantic versioning applied through Git tags. A version tag (e.g., \texttt{v1.0.0}) corresponds to a stable milestone, such as the delivery of the Minimum Viable Product (MVP) or the final system integration.
+Releases are identified using semantic versioning applied through Git tags. A version tag 
+(e.g., \texttt{v1.0.0}) corresponds to a stable milestone, such as the delivery of the Minimum 
+Viable Product (MVP) or the final system integration.
 
 \subsection{Data Versioning}
-Both raw and cleaned datasets are stored in the repository under dedicated directories. Data preprocessing is deterministic and documented through scripts and notebooks, ensuring reproducibility. Since cleaned data is used to feed a synthetic sensor, data evolution is tracked implicitly through Git commits rather than a dedicated data versioning system.
+Both raw and cleaned datasets are stored in the repository under dedicated directories.
+In a real case environment with larger datasets, a dedicated data versioning tool (e.g., DVC)
+would be recommended. 
+Data preprocessing is deterministic and documented through scripts and notebooks, 
+ensuring reproducibility. Since cleaned data is used to feed a synthetic sensor, data 
+evolution is tracked implicitly through Git commits rather than a dedicated data versioning system.
 
 \subsection{Model Versioning}
-Model artifacts, including trained models and preprocessing objects (e.g., scalers), are stored in the repository and versioned through Git. Each model version is associated with:
+
+The project adopts a lightweight model versioning strategy consistent with the
+incremental learning paradigm used. Since the model is updated online and does not
+produce discrete training artifacts, no explicit model registry is employed. \newline
+Model behavior is versioned implicitly through:
 \begin{itemize}
-    \item The Git commit under which it was produced
-    \item The training script or notebook used
-    \item Reported evaluation metrics recorded in documentation or commit messages
+    \item The Git commit history of the training and inference code.
+    \item The configuration of the learning algorithm (e.g., Hoeffding Tree parameters and ADWIN settings).
+    \item The monitoring metrics recorded during execution.
 \end{itemize}
+At any point, the active model state can be reproduced by re-running the system from
+the same code version on the same data stream. This approach ensures traceability and
+reproducibility while remaining compatible with a fully online learning workflow.
 
-This lightweight approach provides traceability between code, data, and model artifacts without relying on an external model registry.
-
+For ILSTM model, which is trained offline due to computational constraints, model artifacts 
+are stored in a dedicated directory within the repository.
 
 % =================================================
 % 2. CI/CD \& Automation
@@ -100,9 +131,9 @@ branching. Each feature is developed in an isolated branch and merged into the
 
 Depending on the scope of the change, the following activities are performed before merging:
 \begin{itemize}
-    \item Execution of unit-level or functional tests when modifying core components such as API endpoints, the DAO interface, or dashboard logic
-    \item Manual validation of data consistency when changes affect preprocessing scripts or synthetic sensor generation
-    \item Verification that the Flask prediction service starts correctly and produces valid predictions when model-related code is updated
+    \item Execution of unit-level or functional tests when modifying core components such as API endpoints, the DAO interface, or dashboard logic.
+    \item Manual validation of data consistency when changes affect preprocessing scripts or synthetic sensor generation.
+    \item Verification that the Flask prediction service starts correctly and produces valid predictions when model-related code is updated.
 \end{itemize}
 
 This process ensures that the \texttt{main} branch always represents a stable and 
@@ -112,8 +143,8 @@ executable version of the system.
 Model training and evaluation are automated through dedicated scripts and notebooks. 
 These artifacts allow:
 \begin{itemize}
-    \item Reproducible training of regression models and incremental learners
-    \item Consistent evaluation using predefined metrics (e.g., Mean Squared Error)
+    \item Reproducible training of regression models and incremental learners.
+    \item Consistent evaluation using predefined metrics (e.g., Mean Absolute Error).
 \end{itemize}
 
 Although model retraining is not triggered automatically by a CI pipeline, the system 
@@ -138,13 +169,12 @@ for incremental learning and small-scale deployments. Models are managed using
 file-based versioning with metadata tracked in code and notebooks, 
 ensuring traceability and reproducibility.
 
-Each model version includes:
+Each model script or artifact includes:
 \begin{itemize}
-    \item Model type and architecture (Hoeffding Tree Regressor or ILSTM)
-    \item Configuration parameters and hyperparameters
-    \item Features and data schema used for learning
-    \item Evaluation metrics (e.g., daily mean MSE)
-    \item Creation timestamp and version identifier
+    \item Model type and architecture (Hoeffding Tree Regressor or ILSTM).
+    \item Configuration parameters and hyperparameters.
+    \item Features and data schema used for learning.
+    \item Evaluation metrics (e.g., daily mean MAE).
 \end{itemize}
 
 Incremental models can be trained offline before deployment. They continuously 
@@ -154,9 +184,9 @@ drift in prediction errors.
 
 Governance actions triggered by ADWIN include:
 \begin{itemize}
-    \item Increasing the learning weight of new samples to adapt quickly when drift is detected
-    \item Ignoring anomalous data points with very high prediction error to avoid degrading the model
-    \item Resetting or reinitializing the model if performance degrades persistently
+    \item Increasing the learning weight of new samples to adapt quickly when drift is detected.
+    \item Ignoring anomalous data points with very high prediction error to avoid degrading the model.
+    \item Resetting or reinitializing the model if performance degrades persistently.
 \end{itemize}
 
 All model changes are tracked through Git commits, with parameters and configurations 
@@ -173,23 +203,18 @@ The system continuously monitors input features and model performance to ensure
 reliable predictions:
 \begin{itemize}
     \item \textbf{Feature Drift:} ADWIN monitors the stream of prediction errors for statistically significant changes.
-    \item \textbf{Prediction Performance:} The custom KPI (daily mean MSE) is computed in real time at the end of the day,
+    \item \textbf{Prediction Performance:} The custom KPI (daily mean MAE) is computed in real time at the end of the day,
     still using standard KPI to ensure the custom KPI is working as expected.
     \item \textbf{Alerts:} When ADWIN detects drift or the KPI exceeds predefined thresholds, alerts are triggered to notify operators.
 \end{itemize}
 
 \subsection{Incident Response}
 When alerts are triggered due to detected drift or performance degradation, 
-the following actions are performed:
+the influence of new samples is adjusted by modifying their learning weight:
 \begin{itemize}
-    \item Adjusting the influence of new samples by modifying their learning weight:
-    \begin{itemize}
-        \item High weight for drift events to allow rapid adaptation
-        \item Zero weight for outlier points to prevent corruption
-        \item Standard weight for normal observations
-    \end{itemize}
-    \item Resetting or reinitializing the incremental model if sustained degradation occurs
-    \item Switching to a previously stable version of the model if necessary
+    \item High weight for drift events to allow rapid adaptation.
+    \item Zero weight for outlier points to prevent corruption.
+    \item Standard weight for normal observations.
 \end{itemize}
 
 These procedures ensure the system maintains accurate, reliable predictions while 

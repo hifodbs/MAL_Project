@@ -16,6 +16,7 @@
 \usepackage{xcolor}
 \usepackage{enumitem}
 \usepackage{fancyhdr}
+\usepackage{amsmath}
 
 % -------------------------------------------------
 % Page Layout
@@ -82,6 +83,7 @@ Version & Date & Author & Description \\ \midrule
 % =================================================
 % 1. Problem Definition
 % =================================================
+
 \section{Problem Definition}
 
 \subsection{Business Problem}
@@ -95,21 +97,22 @@ of solar power output to support operational decision-making.
 
 Given historical and the forecast weather data (temperature, irradiance) plus the historical power data, 
 predict the energy produced by the plant for the next timestamp.  
-The dataset used provides measurements every 15 minutes.  
+The dataset used provides measurements every 15 minutes.
+This is formulated as a supervised regression problem using an incremental Hoeffding Tree Regressor.
 
-This is formulated as a supervised regression problem using an incremental Hoeffding Tree Regressor, 
-with an optional extension to a Long Short-Term Memory (LSTM) model for a day window forecast.
+An optional extension to a Long Short-Term Memory (LSTM) model for a 24 hour window forecast is provided
+as proof of concept.
 
 \subsection{Key Performance Indicators (KPIs)}
 
 
 A custom KPI is used for model evaluation and monitoring. The KPI focuses on daily prediction accuracy, measuring 
 the ratio between the sum of Mean Absolute Errors (MAE) over the sum of actual power values for that day.
-The error is expressed as a percentage to facilitate interpretation and set thresholds for alerts.
-
+The error is expressed as a percentage to facilitate interpretation and with the possibility for the end user to
+set thresholds for alerts. \newline
 The KPI is defined as follows:
 
-\[ KPI = \frac{\sum_{i=1}^{N} |y_i - \hat{y}_i|}{\sum_{i=1}^{N} y_i} * 100 \]
+\[ \text{KPI} = \frac{\sum_{i=1}^{N} |y_i - \hat{y}_i|}{\sum_{i=1}^{N} y_i} * 100 \]
 
 Where:
 \begin{itemize}
@@ -128,7 +131,8 @@ Where:
 
 The dataset is sourced from Kaggle and represents two solar power plants.  
 Each plant is described by two CSV files: one for power generation and one for weather conditions.  
-This setup simulates real-time sensor data using synthetic sensors.
+This setup simulates real-time sensor data using synthetic sensors and assume precise data transmission
+without noise or data loss.
 
 \subsubsection{Plant Generation Data}
 
@@ -164,6 +168,7 @@ IRRADIATION & Solar irradiation during the timestamp interval. \\
     \item Raw data ingestion from CSV files.
     \item Adjust missing values.
     \item Standardize units.
+    \item Selection of relevant features.
     \item Assign data to the corresponding synthetic sensor/panel.
     \item Collect the data from the server.
     \item Use new data points to make predictions.
@@ -179,10 +184,9 @@ Missing Values:
   \item Missing AC/DC power values:  
     \begin{itemize}
       \item At night (no irradiation), zeros are inserted.  
-      \item During the day, linear interpolation (with median used for lack of data).  
+      \item During the day, linear interpolation.  
     \end{itemize}  
 \end{itemize}
-
 Outliers: (e.g., zero AC power during daytime) are corrected using linear interpolation.
 
 
@@ -197,7 +201,7 @@ The system shall provide the following use cases:
   \item Visualize the real-time power output of the plant.  
   \item Predict the power for the next timestamp.  
   \item Generate an end-of-day report comparing predicted and actual power.
-  \item Train the ILSTM for day-ahead forecasting (optional).
+  \item Predict the power production for the next day using the ILSTM.
 \end{itemize}
 
 
@@ -208,13 +212,13 @@ The system shall provide the following use cases:
 ID & Description \\ \midrule
 FR-01 & The system shall ingest historical data. \\
 FR-02 & The model shall forecast the next timestamp. \\
-FR-03 & The model shall detect and display drift for each panel  \\
+FR-03 & The model shall detect and display drift for each panel.  \\
 FR-04 & The system shall display predicted vs actual power generation per timestamp. \\
 FR-05 & The dashboard shall produce an end-of-day report for each plant. \\
+FR-06 & The system shall provide an experimental ILSTM model for day-ahead forecasting. \\
 \bottomrule
 \end{longtable}
 
----
 
 % =================================================
 % 4. Non-Functional Requirements
@@ -234,7 +238,6 @@ NFR-07 & The dashboard shall maintain at least 99\% uptime during operational ho
 \bottomrule
 \end{longtable}
 
----
 
 % =================================================
 % 5. System Architecture
@@ -261,7 +264,7 @@ The DAO provides synthetic sensor readings to simulate a real-world scenario.
 
 \subsection{Validation}
 \begin{itemize}
-    \item Online rolling evaluation monitors the custom KPI (daily mean MSE).
+    \item Online rolling evaluation monitors the custom KPI (daily mean MAE).
     \item ADWIN monitors data streams for drift in real time.
     \item Alerts are triggered if drift is detected, allowing operators to adjust updates.
 \end{itemize}
@@ -281,15 +284,15 @@ The DAO provides synthetic sensor readings to simulate a real-world scenario.
     \item Alerts are triggered on significant drift detection.
 \end{itemize}
 
-\noindent
-\textbf{Process Flow:}
+
+\subsection{Process Flow}
 \begin{enumerate}
     \item User requests a prediction via the dashboard.  
     \item Flask queries the DAO for latest sensor readings.  
     \item Sensor data is input to the incremental model.  
-    \item Prediction is returned to the dashboard.  
     \item The model updates incrementally with each new data point.  
-    \item ADWIN monitors for drift and triggers alerts if necessary.
+    \item ADWIN monitors for drift and sends data to the dashboard.
+    \item Prediction is returned to the dashboard.  
 \end{enumerate}
 
 

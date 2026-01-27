@@ -122,6 +122,16 @@ INPUT /usr/share/texlive/texmf-dist/tex/latex/enumitem/enumitem.sty
 INPUT /usr/share/texlive/texmf-dist/tex/latex/enumitem/enumitem.sty
 INPUT /usr/share/texlive/texmf-dist/tex/latex/fancyhdr/fancyhdr.sty
 INPUT /usr/share/texlive/texmf-dist/tex/latex/fancyhdr/fancyhdr.sty
+INPUT /usr/share/texlive/texmf-dist/tex/latex/amsmath/amsmath.sty
+INPUT /usr/share/texlive/texmf-dist/tex/latex/amsmath/amsmath.sty
+INPUT /usr/share/texlive/texmf-dist/tex/latex/amsmath/amsopn.sty
+INPUT /usr/share/texlive/texmf-dist/tex/latex/amsmath/amstext.sty
+INPUT /usr/share/texlive/texmf-dist/tex/latex/amsmath/amstext.sty
+INPUT /usr/share/texlive/texmf-dist/tex/latex/amsmath/amsgen.sty
+INPUT /usr/share/texlive/texmf-dist/tex/latex/amsmath/amsgen.sty
+INPUT /usr/share/texlive/texmf-dist/tex/latex/amsmath/amsbsy.sty
+INPUT /usr/share/texlive/texmf-dist/tex/latex/amsmath/amsbsy.sty
+INPUT /usr/share/texlive/texmf-dist/tex/latex/amsmath/amsopn.sty
 INPUT /usr/share/texmf/tex/latex/lm/t1lmr.fd
 INPUT /usr/share/texmf/tex/latex/lm/t1lmr.fd
 INPUT /usr/share/texmf/tex/latex/lm/t1lmr.fd
@@ -145,6 +155,8 @@ INPUT /usr/share/texlive/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 INPUT /usr/share/texlive/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 INPUT /usr/share/texlive/texmf-dist/tex/latex/epstopdf-pkg/epstopdf-base.sty
 INPUT /usr/share/texlive/texmf-dist/tex/latex/epstopdf-pkg/epstopdf-base.sty
+INPUT /usr/share/texlive/texmf-dist/tex/latex/grfext/grfext.sty
+INPUT /usr/share/texlive/texmf-dist/tex/latex/grfext/grfext.sty
 INPUT /usr/share/texlive/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg
 INPUT /usr/share/texlive/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg
 INPUT /usr/share/texlive/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg
@@ -192,13 +204,15 @@ INPUT /usr/share/texmf/fonts/tfm/public/lm/lmsy7.tfm
 INPUT /usr/share/texmf/fonts/tfm/public/lm/lmsy5.tfm
 OUTPUT system specification document/system specification document.toc
 INPUT /usr/share/texmf/fonts/tfm/public/lm/ec-lmbx12.tfm
+INPUT /usr/share/texmf/fonts/tfm/public/lm/ec-lmr7.tfm
+INPUT /usr/share/texmf/fonts/tfm/public/lm/ec-lmr5.tfm
 INPUT /usr/share/texmf/tex/latex/lm/ts1lmr.fd
 INPUT /usr/share/texmf/tex/latex/lm/ts1lmr.fd
 INPUT /usr/share/texmf/tex/latex/lm/ts1lmr.fd
 INPUT /usr/share/texmf/fonts/tfm/public/lm/ts1-lmr10.tfm
-INPUT /usr/share/texmf/fonts/enc/dvips/lm/lm-mathit.enc
 INPUT /usr/share/texmf/fonts/enc/dvips/lm/lm-rm.enc
 INPUT /usr/share/texmf/fonts/enc/dvips/lm/lm-mathex.enc
+INPUT /usr/share/texmf/fonts/enc/dvips/lm/lm-mathit.enc
 INPUT /usr/share/texmf/fonts/enc/dvips/lm/lm-mathsy.enc
 INPUT /usr/share/texmf/fonts/enc/dvips/lm/lm-ts1.enc
 INPUT ./img/DDSE.drawio.png
