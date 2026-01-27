@@ -7,7 +7,7 @@
 \usepackage{lmodern}
 \usepackage{geometry}
 \usepackage{setspace}
-\usepackage{hyperref}
+\usepackage[hidelinks]{hyperref}
 \usepackage{graphicx}
 \usepackage{longtable}
 \usepackage{booktabs}
@@ -31,10 +31,10 @@
 \fancyhead[R]{\thepage}
 
 % -------------------------------------------------
-% Document Metadata
+% Metadata
 % -------------------------------------------------
-\title{\textbf{Project Proposal \& Development Plan}}
-\author{Team / Organization Name}
+\title{\textbf{System Specification Document}}
+\author{S.O.L.A.R. Project}
 \date{\today}
 
 % -------------------------------------------------
@@ -43,6 +43,21 @@
 \begin{document}
 
 \maketitle
+\thispagestyle{empty}
+\newpage
+
+% -------------------------------------------------
+% Revision History
+% -------------------------------------------------
+\section*{Revision History}
+\begin{longtable}{@{}lll p{7cm}@{}}
+\toprule
+Version & Date & Author & Description \\ \midrule
+0.1 & 2025-12-17 & Matteo & Initial draft \\
+1.0 & 2026-01-25 & Matteo & Approved release \\
+\bottomrule
+\end{longtable}
+
 \newpage
 \tableofcontents
 \newpage
@@ -60,8 +75,9 @@ system for short-term solar power generation forecasting. The system covers the 
 lifecycle of a machine learning application, including data ingestion, preprocessing, 
 model training, validation, deployment, monitoring, and incremental updates. The 
 solution is designed to simulate real-world operational conditions through synthetic sensors.
-The project further incorporates a ILSTM model as a proof of concept for advanced 
-forecasting techniques.
+The project further incorporates a slightly simpler ILSTM model proposed in this 
+\href{https://www.sciencedirect.com/science/article/pii/S0045790621001592}{paper} 
+as a proof of concept for advanced forecasting techniques.
 
 \subsection{Objectives}
 
@@ -83,13 +99,12 @@ Reliable predictions of solar power generation enable energy operators to
 better align supply with demand and to improve the overall efficiency of power 
 system operations.
 
-The project demonstrates the practical application of neural network 
-techniques for time-series forecasting, focusing on the prediction of 
+The project demonstrates the practical application of machine learning and 
+neural network techniques for time-series forecasting, focusing on the prediction of 
 next-day solar power generation using historical production data and 
 weather-related features. By addressing real-world challenges such as 
 data variability and evolving system behavior, the project highlights the 
-value of machine learning solutions in supporting sustainable and data-driven 
-energy management.
+value of data driven solutions in supporting sustainable energy management.
 
 % =================================================
 % 2. Deliverables
@@ -119,8 +134,8 @@ energy management.
     \item Implementation of the DAO layer and integration of synthetic sensor data sources.
     \item Deployment of the Flask-based prediction service exposing a REST-style API.
     \item Development of the Streamlit dashboard for real-time visualization and monitoring.
-    \item Implementation and evaluation of an advanced incremental LSTM (ILSTM) model.
     \item Activation of monitoring components for data drift and prediction performance.
+    \item Implementation and evaluation of an advanced incremental LSTM (ILSTM) model.
 \end{enumerate}
 
 
@@ -133,7 +148,9 @@ energy management.
 
 The project started by a brainstorming session to identify the main components 
 and tasks required to achieve the project objectives. The WBS was then structured 
-into the following main components:
+into the following main components: 
+
+% ad helping team member
 
 \subsubsection{Project Manager}
 \begin{itemize}
@@ -146,6 +163,7 @@ into the following main components:
 \begin{itemize}
     \item Exploratory data analysis and validation of the datasets.
     \item Development and evaluation of the baseline incremental regression model.
+    \item Integration of monitoring components for drift detection and performance tracking.
     \item Design, implementation, and evaluation of the incremental LSTM (ILSTM) model.
     \item Definition and monitoring of performance metrics and KPIs.
 \end{itemize}
@@ -155,7 +173,6 @@ into the following main components:
     \item Implementation of the DAO layer for accessing synthetic sensor data.
     \item Development of the Flask-based prediction service and REST-style API.
     \item Development of the Streamlit dashboard for visualization and monitoring.
-    \item Integration of monitoring components for drift detection and performance tracking.
 \end{itemize}
 
 % =================================================
@@ -200,7 +217,7 @@ A task or feature is considered ready to start when all the following conditions
     \item The task is clearly defined, with measurable objectives and scope.
     \item Required datasets are available, cleaned, and preprocessed for use with synthetic sensors.
     \item Technical specifications, including API endpoints, dashboard requirements, and model input/output, are documented.
-    \item Dependencies, such as necessary libraries (Flask, Streamlit, scikit-multiflow), frameworks, or environment setup, are identified and accessible.
+    \item Dependencies, such as necessary libraries (Flask, Streamlit, River), frameworks, or environment setup, are identified and accessible.
     \item Acceptance criteria are clearly defined, including performance targets for the incremental regression model and drift detection.
 \end{itemize}
 
@@ -227,13 +244,15 @@ A task or feature is considered done when all the following conditions are satis
     \item \textbf{Programming Languages and Libraries:}
     \begin{itemize}
         \item Python: Core language for data processing, modeling, and backend development.
-        \item Libraries: pandas, numpy, scikit-learn, river (for real-time machine learning), Flask (for REST API), and Streamlit (for dashboard visualization).
+        \item Libraries: pandas, numpy, scikit-learn, river (for real-time machine learning), 
+        Flask (for REST API), Streamlit (for dashboard visualization), TensorFlow and Keras (for ILSTM model implementation).
     \end{itemize}
 
     \item \textbf{Data Management:}
     \begin{itemize}
-        \item Raw datasets from solar power plants, including sensor data for temperature, irradiation, and power generation.
-        \item CSV files for data ingestion and preprocessing.
+        \item Raw datasets from solar power plants, including sensor data for temperature, irradiation, and power generation are stored as immutable objects. 
+        \item Clean CSV files for model training are generating through deterministic preprocessing.
+        \item At runtime DAOs retrive data for the server. 
     \end{itemize}
 
     \item \textbf{Version Control:}

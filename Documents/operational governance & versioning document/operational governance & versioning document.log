@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2025/dev/Debian) (preloaded format=pdflatex 2025.12.17)  26 JAN 2026 18:27
+This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2025/dev/Debian) (preloaded format=pdflatex 2025.12.17)  27 JAN 2026 19:09
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -421,7 +421,9 @@ LaTeX Font Info:    External font `lmex10' loaded for size
 
 [1
 
-{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}{/usr/share/texmf/fonts/enc/dvips/lm/lm-ec.enc}] (operational governance & versioning document/operational governance & versioning document.toc
+{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}{/usr/share/texmf/fonts/enc/dvips/lm/lm-ec.enc}]
+
+[2] (operational governance & versioning document/operational governance & versioning document.toc
 LaTeX Font Info:    External font `lmex10' loaded for size
 (Font)              <10> on input line 2.
 LaTeX Font Info:    External font `lmex10' loaded for size
@@ -434,21 +436,21 @@ LaTeX Font Info:    External font `lmex10' loaded for size
 
 
 
-[2]
-LaTeX Font Info:    Trying to load font information for T1+lmtt on input line 56.
+[3]
+LaTeX Font Info:    Trying to load font information for T1+lmtt on input line 71.
  (/usr/share/texmf/tex/latex/lm/t1lmtt.fd
 File: t1lmtt.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
-LaTeX Font Info:    Trying to load font information for TS1+lmr on input line 63.
+LaTeX Font Info:    Trying to load font information for TS1+lmr on input line 78.
  (/usr/share/texmf/tex/latex/lm/ts1lmr.fd
 File: ts1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
 
-[3{/usr/share/texmf/fonts/enc/dvips/lm/lm-ts1.enc}]
+[4{/usr/share/texmf/fonts/enc/dvips/lm/lm-ts1.enc}]
 
-[4]
+[5]
 
-[5] (operational governance & versioning document/operational governance & versioning document.aux)
+[6] (operational governance & versioning document/operational governance & versioning document.aux)
  ***********
 LaTeX2e <2024-11-01> patch level 2
 L3 programming layer <2025-01-18>
@@ -457,18 +459,18 @@ Package rerunfilecheck Info: File `"operational governance & versioning document
 (rerunfilecheck)             Checksum: BBCF232D2AE5EC5CD1FB0CEF7564D797;2077.
  ) 
 Here is how much of TeX's memory you used:
- 12127 strings out of 475135
- 189081 string characters out of 5765397
- 593655 words of memory out of 5000000
- 34945 multiletter control sequences out of 15000+600000
+ 12133 strings out of 475135
+ 189170 string characters out of 5765397
+ 593717 words of memory out of 5000000
+ 34948 multiletter control sequences out of 15000+600000
  606087 words of font info for 66 fonts, out of 8000000 for 9000
  36 hyphenation exceptions out of 8191
- 75i,11n,79p,469b,545s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 75i,11n,79p,415b,545s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/share/texmf/fonts/type1/public/lm/lmbx10.pfb></usr/share/texmf/fonts/type1/public/lm/lmbx12.pfb></usr/share/texmf/fonts/type1/public/lm/lmr10.pfb></usr/share/texmf/fonts/type1/public/lm/lmr12.pfb></usr/share/texmf/fonts/type1/public/lm/lmtt10.pfb>
-Output written on "operational governance & versioning document/operational governance & versioning document.pdf" (5 pages, 148828 bytes).
+Output written on "operational governance & versioning document/operational governance & versioning document.pdf" (6 pages, 150072 bytes).
 PDF statistics:
- 131 PDF objects out of 1000 (max. 8388607)
- 111 compressed objects within 2 object streams
- 20 named destinations out of 1000 (max. 500000)
+ 137 PDF objects out of 1000 (max. 8388607)
+ 116 compressed objects within 2 object streams
+ 23 named destinations out of 1000 (max. 500000)
  105 words of extra memory for PDF output out of 10000 (max. 10000000)
 
