@@ -19,6 +19,7 @@ class PredictionService:
         self.weather_dao = WeatherDAO(data_directory)
         self.measure_dao = MeasurementsDAO(data_directory)
         self.panels_dao = PanelsDAO(data_directory)
+        self.LSTM_prediction_dao = PredictionDao("InclLSTM") #this is to show LSTM dashboard 
         self.models = models
         self.data_directory = data_directory
 
@@ -223,3 +224,7 @@ class PredictionService:
         panels_drifts = grouped['drift'].astype(int).to_dict()
     
         return total_kpi, panels_kpis, total_drifts, panels_drifts
+    
+    def get_LSTM_predictions_by_plant_id_and_panel_id(self, plant_id, panel_id):
+        return self.LSTM_prediction_dao.get_all_panel_predictions_by_plant_id(plant_id, panel_id)
+        
