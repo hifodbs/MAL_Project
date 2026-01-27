@@ -175,6 +175,68 @@ def get_new_prediction_by_panel_id(plant_id, panel_id):
         return jsonify({"error": str(e)}), 500
 
 
+# GET /plants/<plant_id>/panels/<panel_id>/lstm_predictions
+
+
+@panels_bp.route(
+    "/plants/<plant_id>/panels/<panel_id>/lstm_predictions",
+    methods=["GET"],
+)
+def get_LSTM_predictions(plant_id, panel_id):
+    try:
+        prediction_dao = get_prediction_service()
+        predictions = prediction_dao.get_LSTM_predictions_by_plant_id_and_panel_id(plant_id, panel_id)
+
+        if predictions is None:
+            return jsonify({"error": "No data available for LSTM"}), 404  
+        
+        return jsonify([
+            {
+                "timestamp": p.timestamp.isoformat(),
+                "plant_id": p.plant_id,
+                "panel_id": p.panel_id,
+                "ac_power": p.predicted_ac_power,
+                "drift": p.drift,
+            }
+            for p in predictions
+        ]), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+
+# GET /plants/<plant_id>/panels/<panel_id>/lstm_predictions
+
+
+@panels_bp.route(
+    "/plants/<plant_id>/panels/<panel_id>/lstm_predictions",
+    methods=["GET"],
+)
+def get_LSTM_measurements(plant_id, panel_id):
+    try:
+
+        measurements = panels_service.get_LSTM_measurements_by_plant_id_and_panel_id(plant_id, panel_id)
+
+        if measurements is None:
+            return jsonify({"error": "No data available for LSTM"}), 404  
+        
+        return jsonify([
+            {
+                "timestamp": m.timestamp.isoformat(),
+                "plant_id": m.plant_id,
+                "panel_id": m.panel_id,
+                "ac_power": m.predicted_ac_power,
+                "drift": m.drift,
+            }
+            for m in measurements
+        ]), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+    
+
+
+
+
 ##testing
 #
 #panels = panels_service.get_all_by_plant_id(
