@@ -12,7 +12,9 @@ from api import (
     get_predictions_by_panel_id,
     get_report,
     get_new_prediction_by_plant_id,
-    get_new_prediction_by_panel_id
+    get_new_prediction_by_panel_id,
+    get_LSTM_measurements_by_plant_id_and_panel_id,
+    get_LSTM_predictions_by_plant_id_and_panel_id
 )
 
 
@@ -274,7 +276,25 @@ if st.session_state.selected_panel_id:
             combined_panel.pivot(index="timestamp", columns="type", values="ac_power"),
             color=["#1f77b4", "#ff7f0e"]
         )
-    
+
+    st.markdown("---")
+    st.subheader(f"Panel {panel_number} LSTM predictions")
+    st.markdown(f"this predictions are sored in memory and ar not elaborated in realtime this is only shown for demonstration pourpose")
+    with st.spinner("Loading LSTM data..."):
+        lstm_measurements = get_LSTM_measurements_by_plant_id_and_panel_id(selected_plant_id, panel_id)
+        lstm_predictions = get_LSTM_predictions_by_plant_id_and_panel_id(selected_plant_id, panel_id)
+    df_lstm_m = to_dataframe(p_measurements)
+    df_lstm_p = to_dataframe(p_predictions)
+
+    if not df_lstm_m.empty or not df_lstm_p.empty:
+        df_lstm_m["type"] = "measured"
+        df_lstm_p["type"] = "predicted"
+        combined_panel = pd.concat([df_lstm_m, df_lstm_p])
+        st.line_chart(
+            combined_panel.pivot(index="timestamp", columns="type", values="ac_power"),
+            color=["#1f77b4", "#ff7f0e"]
+        )
+
     if st.button("Clear panel selection"):
         st.session_state.selected_panel_id = None
         st.rerun()
