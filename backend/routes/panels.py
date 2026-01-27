@@ -205,11 +205,11 @@ def get_LSTM_predictions(plant_id, panel_id):
 
 
 
-# GET /plants/<plant_id>/panels/<panel_id>/lstm_predictions
+# GET /plants/<plant_id>/panels/<panel_id>/lstm_measurements
 
 
 @panels_bp.route(
-    "/plants/<plant_id>/panels/<panel_id>/lstm_predictions",
+    "/plants/<plant_id>/panels/<panel_id>/lstm_measurements",
     methods=["GET"],
 )
 def get_LSTM_measurements(plant_id, panel_id):
