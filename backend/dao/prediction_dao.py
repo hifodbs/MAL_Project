@@ -37,13 +37,16 @@ class PredictionDao:
             if panel_id is not None and row.get("SOURCE_KEY") != panel_id:
                 return None  
 
+            drift_str = str(row.get("DRIFT", "False")).lower()
+            drift_bool = drift_str in ("true", "1", "t")
+
             return HistoricalPrediction(
                 timestamp=datetime.strptime(row["DATE_TIME"], "%Y-%m-%d %H:%M:%S"),
                 plant_id=plant_id,
                 panel_id=row["SOURCE_KEY"],
                 predicted_ac_power=float(row["PREDICTED_AC_POWER"]),
                 real_ac_power=float(row["REAL_AC_POWER"]),
-                drift=bool(row["DRIFT"])
+                drift=drift_bool
 
             )
         except (KeyError, ValueError, TypeError):
@@ -81,7 +84,7 @@ class PredictionDao:
             return self.get_all_panel_predictions_by_panel_id(panel_id=panel_id)
 
         if end_time is None:
-            end_time = start_time.max
+            end_time = datetime.max
         
         if start_time is None:
             start_time = datetime.min
