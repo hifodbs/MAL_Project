@@ -17,6 +17,7 @@ git clone https://github.com/hifodbs/MAL_Project
 cd MAL_Project
 ```
 2. Create and activate a virtual environment (recommended):
+
 Linux/MacOS:
 ```sh
 python3 -m venv venv
@@ -33,6 +34,7 @@ pip install -r requirements.txt
 ```
 4. To start the project, run the **`main.py`** automation script. This will initialize the Flask backend, wait for it to come online, and then launch the Streamlit dashboard.
 The script will automatically handle directory navigation for the separate backend and frontend services. Press **`Ctrl+C`** in the terminal to stop both servers.
+
 Linux/MacOS:
 ```sh
 python3 main.py
