@@ -187,7 +187,7 @@ def get_LSTM_predictions(plant_id, panel_id):
         prediction_dao = get_prediction_service()
         predictions = prediction_dao.get_LSTM_predictions_by_plant_id_and_panel_id(plant_id, panel_id)
 
-        if predictions is None:
+        if not predictions:
             return jsonify({"error": "No data available for LSTM"}), 404  
         
         return jsonify([
@@ -217,7 +217,7 @@ def get_LSTM_measurements(plant_id, panel_id):
 
         measurements = panels_service.get_LSTM_measurements_by_plant_id_and_panel_id(plant_id, panel_id)
 
-        if measurements is None:
+        if not measurements:
             return jsonify({"error": "No data available for LSTM"}), 404  
         
         return jsonify([
@@ -225,8 +225,7 @@ def get_LSTM_measurements(plant_id, panel_id):
                 "timestamp": m.timestamp.isoformat(),
                 "plant_id": m.plant_id,
                 "panel_id": m.panel_id,
-                "ac_power": m.predicted_ac_power,
-                "drift": m.drift,
+                "ac_power": m.ac_power
             }
             for m in measurements
         ]), 200
