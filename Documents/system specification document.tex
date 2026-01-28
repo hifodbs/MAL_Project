@@ -279,7 +279,7 @@ The DAO provides synthetic sensor readings to simulate a real-world scenario.
 
 \subsection{Monitoring}
 \begin{itemize}
-    \item ADWIN monitors feature distributions and prediction errors.
+    \item ADWIN monitors prediction errors (concept drift).
     \item Metrics and predictions are logged for auditing.
     \item Alerts are triggered on significant drift detection.
 \end{itemize}
@@ -307,7 +307,7 @@ Since preprocessing is defined and validated at initialization, runtime data tra
 \toprule
 \textbf{Risk} & \textbf{Description and Mitigation Strategy} & \textbf{Impact} \\ \midrule
 
-Data Drift &
+Concept Drift &
 \textbf{Description:} Statistical properties of sensor data may change over time due to seasonal or environmental variations.\newline
 \textbf{Mitigation Strategy:} ADWIN monitors the data stream in real time and triggers alerts when drift is detected. &
 High \\
