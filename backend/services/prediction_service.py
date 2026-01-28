@@ -226,5 +226,15 @@ class PredictionService:
         return total_kpi, panels_kpis, total_drifts, panels_drifts
     
     def get_LSTM_predictions_by_plant_id_and_panel_id(self, plant_id, panel_id):
-        return self.LSTM_prediction_dao.get_all_panel_predictions_by_plant_id(plant_id, panel_id)
-        
+        return self.LSTM_prediction_dao.get_all_panel_predictions_by_panel_id(plant_id, panel_id)
+    
+##testing
+#lstm_path = "InclLSTM"
+#plant_id = "solar_1"
+#panel_id = "ZnxXDlPa8U1GXgE"
+#lstm_service = PredictionService(models=None)
+#lstm_measurements = lstm_service.get_LSTM_predictions_by_plant_id_and_panel_id(plant_id=plant_id,panel_id=panel_id)
+#print("\r\n\nPrint from prediction_service")
+#for i in range(3):
+#    print(lstm_measurements[i])
+#    print(lstm_measurements[len(lstm_measurements) - i - 1])
