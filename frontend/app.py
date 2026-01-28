@@ -279,7 +279,7 @@ if st.session_state.selected_panel_id:
 
     st.markdown("---")
     st.subheader(f"Panel {panel_number} LSTM predictions")
-    st.markdown(f"this predictions are stored in memory and ar not elaborated in realtime. This is only a proof of concept")
+    st.markdown(f"These predictions shows the difference between the actual 24 hours and the predicted ones. They are stored in memory and they are not elaborated in realtime, referring to the day 16/06/2020. This is only a proof of concept.")
     with st.spinner("Loading LSTM data..."):
         lstm_measurements = get_LSTM_measurements_by_plant_id_and_panel_id(selected_plant_id, panel_id)
         lstm_predictions = get_LSTM_predictions_by_plant_id_and_panel_id(selected_plant_id, panel_id)
