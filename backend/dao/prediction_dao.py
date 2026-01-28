@@ -261,3 +261,11 @@ class PredictionDao:
 #    print(f"Iteration {i}")
 #    print(time_range_global_measurement[i])
 #    print(time_range_panel_measurement[i])
+#print("\r\n\nPrint from prediction_dao")
+#lstm_path = "InclLSTM"
+#plant_id = "solar_1"
+#lstm_dao = PredictionDao(lstm_path)
+#lstm_measurements = lstm_dao.get_all_panel_predictions()
+#for i in range(3):
+#    print(lstm_measurements[i])
+#    print(lstm_measurements[len(lstm_measurements) - i - 1])
