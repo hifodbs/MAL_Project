@@ -26,7 +26,7 @@ def run_app():
         print(" Waiting for Flask to initialize on port 5000...")
         
         server_ready = False
-        for i in range(30): 
+        for i in range(60): 
             if is_backend_ready(port=5000):
                 print("SUCCESS: Flask is online!")
                 server_ready = True
@@ -34,7 +34,7 @@ def run_app():
             time.sleep(1)
             
         if not server_ready:
-            print(f"\nERROR: Flask failed to start within 30 seconds.")
+            print(f"\nERROR: Flask failed to start within 60 seconds.")
             print("Exiting pipeline to prevent errors.")
             backend_process.terminate()
             sys.exit(1)
