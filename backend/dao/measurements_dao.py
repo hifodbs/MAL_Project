@@ -16,12 +16,17 @@ class MeasurementsDAO:
         try:
             if panel_id is not None and row.get("SOURCE_KEY") != panel_id:
                 return None  
+            
+            if "AC_POWER" in row:
+                ac_power = float(row["AC_POWER"])
+            else:
+                ac_power = float(row["REAL_AC_POWER"]) 
 
             return PanelMeasurement(
                 timestamp=datetime.strptime(row["DATE_TIME"], "%Y-%m-%d %H:%M:%S"),
                 plant_id=plant_id,
                 panel_id=row["SOURCE_KEY"],
-                ac_power=float(row["AC_POWER"]),
+                ac_power=ac_power,
             )
         except (KeyError, ValueError, TypeError):
             return None
@@ -221,3 +226,11 @@ class MeasurementsDAO:
 #for i in range(3):
 #    print(all_measurements[i])
 #    print(all_measurements[len(all_measurements) - i - 1])
+#print("\r\n\nPrint from measurements_dao")
+#lstm_path = "InclLSTM"
+#plant_id = "solar_1"
+#lstm_dao = MeasurementsDAO(lstm_path)
+#lstm_measurements = lstm_dao.get_all_panel_measurements()
+#for i in range(3):
+#    print(lstm_measurements[i])
+#    print(lstm_measurements[len(lstm_measurements) - i - 1])
