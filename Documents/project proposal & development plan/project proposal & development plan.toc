@@ -11,4 +11,4 @@
 \contentsline {subsection}{\numberline {2.3}Sprint Plan}{5}{subsection.2.3}%
 \contentsline {subsection}{\numberline {2.4}Definition of Ready (DoR)}{6}{subsection.2.4}%
 \contentsline {subsection}{\numberline {2.5}Definition of Done (DoD)}{6}{subsection.2.5}%
-\contentsline {subsection}{\numberline {2.6}Resources and Infrastructure}{7}{subsection.2.6}%
+\contentsline {subsection}{\numberline {2.6}Resources and Infrastructure}{6}{subsection.2.6}%

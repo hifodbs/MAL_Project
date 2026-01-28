@@ -216,20 +216,19 @@ A task or feature is considered ready to start when all the following conditions
 \begin{itemize}
     \item The task is clearly defined, with measurable objectives and scope.
     \item Required datasets are available, cleaned, and preprocessed for use with synthetic sensors.
-    \item Technical specifications, including API endpoints, dashboard requirements, and model input/output, are documented.
     \item Dependencies, such as necessary libraries (Flask, Streamlit, River), frameworks, or environment setup, are identified and accessible.
     \item Acceptance criteria are clearly defined, including performance targets for the incremental regression model and drift detection.
 \end{itemize}
 
 \subsection{Definition of Done (DoD)}
 
-A task or feature is considered done when all the following conditions are satisfied:
+The project is considered done when all the following conditions are satisfied:
 
 \begin{itemize}
-    \item The model is implemented, integrated into the Flask API, and correctly returns predictions to the dashboard.
+    \item The model is implemented, integrated into the Flask server, and correctly returns predictions to the dashboard.
     \item The synthetic sensor interface is functional, providing real-time simulated data for predictions.
     \item Incremental learning updates the model continuously, and ADWIN drift detection monitors feature distributions and triggers alerts appropriately.
-    \item Model performance meets the predefined KPIs, such as daily mean MSE below the target threshold.
+    \item Model performance meets the predefined KPIs, such as daily mean MAE below the target threshold.
     \item The codebase is fully documented, versioned, and reviewed according to project standards.
     \item Basic functional tests of the entire pipeline (API, dashboard, monitoring, and sensor interface) have passed successfully.
     \item All related documentation, including design decisions and system architecture, is completed and available.
